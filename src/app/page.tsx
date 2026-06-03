@@ -327,32 +327,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      {/* Contact CTA Section */}
-      <section className="py-24 bg-primary text-white text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/20 to-transparent"></div>
-        </div>
-        <div className="relative z-10 max-w-[1280px] mx-auto px-4 md:px-16">
-          <h2 className="font-headline text-3xl md:text-5xl font-extrabold mb-6">
-            Ready to Taste the Sourcing Difference?
-          </h2>
-          <p className="text-white/80 font-medium text-sm md:text-md max-w-2xl mx-auto mb-10 leading-relaxed">
-            Explore our curated spice products and order premium packs delivered to your doorstep, or reach out for custom gifting options.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/order">
-              <button className="bg-secondary hover:bg-secondary-container text-white px-8 py-4 rounded-full font-headline font-bold text-xs tracking-wider uppercase hover:scale-105 transition-transform duration-300 shadow-lg">
-                Order Online Now
-              </button>
-            </Link>
-            <Link href="/contact">
-              <button className="bg-white/10 hover:bg-white/20 border border-white/30 text-white px-8 py-4 rounded-full font-headline font-bold text-xs tracking-wider uppercase transition-colors">
-                Contact Customer Care
-              </button>
-            </Link>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
