@@ -3,6 +3,5 @@
     { "source": "/api/(.*)", "destination": "/api/$1" }
   ],
   "cleanUrls": true,
-  "trailingSlash": false,
-  "domains": ["out-sooty-eight.vercel.app"]
+  "trailingSlash": false
 }

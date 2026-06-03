@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #00450d;
+  --color-primary-container: #1b5e20;
+  --color-secondary: #904d00;
+  --color-secondary-container: #fe932c;
+  --color-background-cream: #FFFDF7;
+  --color-charcoal: #1F2937;
+  --color-surface-container: #ecefe6;
+  --color-surface-container-low: #f2f5ec;
+  --color-surface-container-highest: #e0e4db;
+  --color-outline-variant: #c0c9bb;
+  --color-on-surface-variant: #41493e;
+  --color-on-surface: #191d17;
+  
+  --font-headline: var(--font-montserrat), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
+}
+
+body {
+  background-color: #FFFDF7;
+  color: #191d17;
+  font-family: var(--font-inter), sans-serif;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.spice-shadow {
+  box-shadow: 0 10px 30px -15px rgba(27, 94, 32, 0.15);
+}
+
+/* Custom styling to ensure smooth animations */
+.transition-all-500 {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}

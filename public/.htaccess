@@ -1,0 +1,12 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Redirect index.html to main directory root /
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.html\ HTTP/
+RewriteRule ^index\.html$ / [R=301,L]
+
+# Resolve subpages without trailing slash and without .html extension
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^([^/]+)/?$ /$1.html [L,QSA]
