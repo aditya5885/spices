@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-
+import Image from "next/image";
 export default function Footer() {
   return (
     <footer className="bg-surface-container-highest dark:bg-charcoal text-on-surface">
@@ -30,9 +30,14 @@ export default function Footer() {
         {/* Links Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-16">
           <div className="md:col-span-1">
-            <div className="font-headline text-xl font-extrabold text-primary mb-6">
-              Vintage Global Ventures
-            </div>
+            <Link href="/" className="block mb-3">
+              <Image
+                src="/images/headlogo_trimmed.png"
+                alt="Vintage Global Ventures"
+                width={220}
+                height={70}
+              />
+            </Link>
             <p className="text-on-surface-variant text-sm leading-relaxed mb-6">
               The premium standard for authentic Indian spices. Sourcing directly from regional farms to bring pure flavors to your kitchen.
             </p>
