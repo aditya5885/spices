@@ -39,15 +39,11 @@ export interface PayUPaymentRequest {
  * Retrieves the PayU configuration from environment variables
  */
 export function getPayUConfig(): PayUConfig {
-  const key = process.env.PAYU_KEY;
-  const salt = process.env.PAYU_SALT;
-  const merchantId = process.env.NEXT_PUBLIC_PAYU_MERCHANT_ID || "";
+  const key = process.env.PAYU_KEY || "gmjiH9";
+  const salt = process.env.PAYU_SALT || "VLC5JLnZa4qJ5SzFBAtUe269Oztl1uPp";
+  const merchantId = process.env.NEXT_PUBLIC_PAYU_MERCHANT_ID || "your_merchant_id";
   const baseUrl = process.env.PAYU_BASE_URL || "https://test.payu.in";
   const mode = (process.env.PAYU_MODE as "test" | "live") || "test";
-
-  if (!key || !salt) {
-    throw new Error("PayU key or salt is missing from environment variables.");
-  }
 
   return { key, salt, merchantId, baseUrl, mode };
 }
