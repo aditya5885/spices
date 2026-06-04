@@ -22,7 +22,7 @@ function OrderFormContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [razorpayKey, setRazorpayKey] = useState("rzp_test_dummykey123");
   
-  const [packSize, setPackSize] = useState<"250g" | "500g" | "1kg">("500g");
+  const [packSize, setPackSize] = useState<"200kg" | "500kg" | "1000kg" | "2000kg">("500kg");
   const [quantity, setQuantity] = useState<number>(1); // Number of packs
   const [step, setStep] = useState<number>(1);
   const [shippingMethod, setShippingMethod] = useState<"standard" | "express">("standard");
@@ -101,13 +101,16 @@ function OrderFormContent() {
   };
 
   // Calculations
-  const getPackPrice = (basePrice: number, size: "250g" | "500g" | "1kg") => {
+  const getPackPrice = (basePrice: number, size: "200kg" | "500kg" | "1000kg" | "2000kg") => {
     switch (size) {
-      case "250g":
-        return Math.round(basePrice * 0.25);
-      case "500g":
-        return Math.round(basePrice * 0.5);
-      case "1kg":
+      case "200kg":
+        return Math.round(basePrice * 200);
+      case "500kg":
+        return Math.round(basePrice * 500);
+      case "1000kg":
+        return Math.round(basePrice * 1000);
+      case "2000kg":
+        return Math.round(basePrice * 2000);
       default:
         return Math.round(basePrice);
     }
@@ -251,8 +254,56 @@ function OrderFormContent() {
       } finally {
         setIsProcessing(false);
       }
+    } else if (paymentMethod === "payu") {
+      setIsProcessing(true);
+      try {
+        const res = await fetch("/api/payU/createOrder", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: totalINR.toString(),
+            productInfo: `Order: ${quantity}x ${packSize} of ${selectedProduct.name}`,
+            firstName: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            udf1: selectedProduct.slug,
+            udf2: packSize,
+            udf3: quantity.toString(),
+            udf4: `${formData.city}, ${formData.state}, ${formData.postalCode}`,
+            udf5: formData.address,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || "Failed to initialize PayU payment session.");
+        }
+
+        const { payload, payuUrl } = data;
+
+        // Build and submit hidden form to redirect to PayU Hosted Checkout
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = payuUrl;
+
+        Object.entries(payload).forEach(([k, v]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = k;
+          input.value = v as string;
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+      } catch (err: any) {
+        console.error("PayU redirect failed:", err);
+        alert(err.message || "PayU checkout failed to initialize. Please try again.");
+      } finally {
+        setIsProcessing(false);
+      }
     } else {
-      // For Paytm, PayU, and COD - save the order in PHP database
+      // For Paytm and COD - save the order in PHP database
       setIsProcessing(true);
       try {
         const verifyResponse = await fetch("/api/verify.php", {
@@ -288,7 +339,7 @@ function OrderFormContent() {
           paymentMethod === "cod" ? "cod_pending" : "pay_" + paymentMethod + "_" + verifyData.order_id
         }&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
           formData.fullName
-        )}&total=${totalINR}&method=${paymentMethod === "cod" ? "COD" : paymentMethod === "paytm" ? "Paytm" : "PayU"}`;
+        )}&total=${totalINR}&method=${paymentMethod === "cod" ? "COD" : "Paytm"}`;
       } catch (err: any) {
         console.warn("Database order registration failed, simulating offline success for demo:", err);
         const mockOrderId = "EXP-" + Date.now() + "-" + Math.floor(100 + Math.random() * 900);
@@ -296,7 +347,7 @@ function OrderFormContent() {
           paymentMethod === "cod" ? "cod_pending" : "pay_" + paymentMethod + "_" + mockOrderId
         }&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
           formData.fullName
-        )}&total=${totalINR}&method=${paymentMethod === "cod" ? "COD" : paymentMethod === "paytm" ? "Paytm" : "PayU"}`;
+        )}&total=${totalINR}&method=${paymentMethod === "cod" ? "COD" : "Paytm"}`;
       } finally {
         setIsProcessing(false);
       }
@@ -372,7 +423,7 @@ function OrderFormContent() {
                     Pack Size
                   </label>
                   <div className="flex gap-2">
-                    {(["250g", "500g", "1kg"] as const).map((size) => (
+                    {(["200kg", "500kg", "1000kg", "2000kg"] as const).map((size) => (
                       <button
                         key={size}
                         type="button"

@@ -48,12 +48,19 @@ export default function HomePage() {
   }, []);
 
   // Filter based on search query
+  // In src/app/page.tsx after filteredProducts definition
   const filteredProducts = productsList.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (product.badge && product.badge.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (product.specs && product.specs.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+
+  // Notify Header about search result count and items
+  React.useEffect(() => {
+    const event = new CustomEvent('productSearchResult', { detail: filteredProducts });
+    window.dispatchEvent(event);
+  }, [filteredProducts]);
 
   return (
     <div className="overflow-x-hidden">
@@ -141,7 +148,7 @@ export default function HomePage() {
 
         {/* Product Cards Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4].map((n) => (
               <div key={n} className="animate-pulse bg-white border border-outline-variant/30 rounded-2xl p-6 h-[420px] flex flex-col justify-between">
                 <div className="bg-surface-container/60 rounded-xl h-48 w-full"></div>

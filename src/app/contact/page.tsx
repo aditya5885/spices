@@ -83,11 +83,12 @@ export default function ContactPage() {
                   <span className="material-symbols-outlined text-2xl select-none">location_on</span>
                 </div>
                 <div>
-                  <h3 className="font-headline font-bold text-sm text-primary">Kochi Headquarters</h3>
+                  <h3 className="font-headline font-bold text-sm text-primary">Registered Office</h3>
                   <p className="text-sm text-on-surface-variant font-semibold mt-1">
-                    Spice Trade Tower, Floor 18<br />
-                    Marine Drive, Kochi, Kerala 682031<br />
-                    India
+                    Vintage Global Ventures Private Limited<br />
+                    55/1668, Suraj Buildings, Club Road,<br />
+                    Giri Nagar, Kadavanthara, Ernakulam,<br />
+                    Kerala - 682020, India
                   </p>
                 </div>
               </div>
@@ -100,8 +101,8 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-headline font-bold text-sm text-primary">Email Enquiries</h3>
                   <p className="text-sm text-on-surface-variant font-semibold mt-1">
-                    General: <a href="mailto:hello@vintageglobalventures.com" className="text-primary hover:underline">hello@vintageglobalventures.com</a><br />
-                    Support: <a href="mailto:support@vintageglobalventures.com" className="text-primary hover:underline">support@vintageglobalventures.com</a>
+                    General: <a href="mailto:info@vintageglobaltrading.com" className="text-primary hover:underline">info@vintageglobaltrading.com</a><br />
+                    Support: <a href="mailto:support@vintageglobaltrading.com" className="text-primary hover:underline">support@vintageglobaltrading.com</a>
                   </p>
                 </div>
               </div>
@@ -115,7 +116,7 @@ export default function ContactPage() {
                   <h3 className="font-headline font-bold text-sm text-primary">Phone Enquiries</h3>
                   <p className="text-sm text-on-surface-variant font-semibold mt-1">
                     +91 (484) 2355-600<br />
-                    +91 (984) 7000-888
+                    +91 99999 99999
                   </p>
                 </div>
               </div>
@@ -123,20 +124,15 @@ export default function ContactPage() {
 
             {/* Static Map Graphic */}
             <div className="relative rounded-2xl overflow-hidden border border-outline-variant/30 h-[280px] shadow-sm">
-              <Image
-                src="https://lh3.googleusercontent.com/aida/ADBb0ugNCrQX9DQE2pIREboL-DfJ9uRjfSJBLMoUcKxh-L_GcFb5emjBy5nrOcv9FvzTdW-8sNsctYcTKpmURzA1HUZwjUxhqVKKL04HYx__gJ1Hs6ou3mAheZIjvGuovw6EDbhkHjsmtpW0QJitSGQZNd1MTRUQViggfw-1Y_nIFmdaI6a2vUNurhzMCgKg74tKAPz0Jl48m5UWzFcxAoR8SNIng3bUmu3fn6NxpQdUA8CfEPBzGE_fjHH9NZE"
-                alt="Map Graphic showing Kochi Headquarters"
-                fill
-                className="object-cover filter grayscale contrast-125 brightness-90"
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7035.27171135622!2d76.29587843109529!3d9.96087138568541!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0872c42c1492af%3A0x45bf994e1b572400!2sSuraj%20Buildings%2C%20Giringar%20Housing%20Colony%2C%20Giri%20Nagar%2C%20Kadavanthra%2C%20Ernakulam%2C%20Kochi%2C%20Kerala%20682020!5e0!3m2!1sen!2sin!4v1780537701905!5m2!1sen!2sin"
+                className="absolute inset-0 w-full h-full"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Ernakulam Office Location"
               />
-              <div className="absolute inset-0 bg-primary/5"></div>
-              {/* Map pin */}
-              <div className="absolute top-[52%] left-[48%] flex flex-col items-center">
-                <span className="material-symbols-outlined text-secondary text-3xl animate-bounce">location_on</span>
-                <div className="bg-primary text-white text-[10px] font-bold px-2 py-1 rounded shadow-md whitespace-nowrap">
-                  Kochi HQ
-                </div>
-              </div>
             </div>
 
             {/* Follow Journey links */}
