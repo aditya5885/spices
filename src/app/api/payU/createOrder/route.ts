@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     console.error("Error in createOrder API route:", err);
     return NextResponse.json(
-      { error: "Internal server error occurred while creating order session." },
+      { error: err.message || "Internal server error occurred while creating order session." },
       { status: 500 }
     );
   }
