@@ -3,12 +3,15 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Product } from "@/types";
+import { products as productData } from "@/data/products";
 
 export default function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +24,21 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Filter products locally as user types in the header search box (minimum 3 characters)
+  useEffect(() => {
+    if (searchQuery.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+    const filtered = productData.filter((product: Product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (product.badge && product.badge.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (product.specs && product.specs.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+    setSearchResults(filtered);
+  }, [searchQuery]);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -58,16 +76,17 @@ export default function Header() {
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`transition-colors pb-1 ${isActive
-                    ? "text-primary border-b-2 border-primary"
-                    : "text-on-surface-variant hover:text-primary"
-                    }`}
-                >
-                  {link.name}
-                </Link>
+                <div className="relative group" key={link.name}>
+                  <Link
+                    href={link.href}
+                    className={`transition-colors pb-1 ${isActive
+                      ? "text-primary border-b-2 border-primary"
+                      : "text-on-surface-variant hover:text-primary"
+                      }`}
+                  >
+                    {link.name}
+                  </Link>
+                </div>
               );
             })}
           </nav>
@@ -81,18 +100,54 @@ export default function Header() {
                   window.location.href = `/?search=${encodeURIComponent(searchQuery)}#products`;
                 }
               }}
-              className="flex items-center bg-surface-container rounded-full px-4 py-2 border border-outline-variant/50"
+              className="relative flex items-center bg-surface-container rounded-full px-4 py-2 border border-outline-variant/50"
             >
               <span className="material-symbols-outlined text-on-surface-variant text-xl leading-none">
                 search
               </span>
-              <input
-                type="text"
-                placeholder="Search spices..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent border-none outline-none text-sm ml-2 w-32 focus:w-44 transition-all duration-300 focus:ring-0 text-on-surface"
-              />
+                <input
+                  type="text"
+                  placeholder="Search spices..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-transparent border-none outline-none text-sm ml-2 w-32 focus:w-44 transition-all duration-300 focus:ring-0 text-on-surface"
+                />
+                {searchResults.length > 0 && (
+                  <div className="absolute left-0 top-full mt-1 w-80 bg-white border border-outline-variant/20 rounded-lg shadow-lg p-2 z-[60] max-h-60 overflow-y-auto">
+                    {searchResults.map((p) => (
+                      <Link
+                        key={p.id}
+                        href={`/?search=${encodeURIComponent(p.name)}#products`}
+                        onClick={(e) => {
+                          setSearchQuery("");
+                          if (window.location.pathname === "/") {
+                            e.preventDefault();
+                            window.location.href = `/?search=${encodeURIComponent(p.name)}#products`;
+                          }
+                        }}
+                        className="flex items-center space-x-3 p-2 hover:bg-surface-container rounded-lg cursor-pointer transition-colors duration-200"
+                      >
+                        <div className="relative w-10 h-10 flex-shrink-0">
+                          <Image
+                            src={p.image}
+                            alt={p.name}
+                            fill
+                            sizes="40px"
+                            className="object-cover rounded"
+                          />
+                        </div>
+                        <div className="flex-grow min-w-0">
+                          <p className="text-sm font-semibold text-primary truncate">{p.name}</p>
+                          {p.specs && (
+                            <p className="text-[10px] font-bold text-secondary uppercase tracking-wider truncate">
+                              {p.specs}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
             </form>
             <Link href="/order">
               <button className="bg-primary text-background-cream hover:bg-primary-container px-6 py-2.5 rounded-full font-headline font-semibold text-xs tracking-wider uppercase hover:scale-[1.03] transition-all duration-300 shadow-md">
@@ -144,7 +199,7 @@ export default function Header() {
                   window.location.href = `/?search=${encodeURIComponent(searchQuery)}#products`;
                 }
               }}
-              className="flex items-center bg-surface-container rounded-full px-4 py-2.5 border border-outline-variant/50 mb-6"
+              className="relative flex items-center bg-surface-container rounded-full px-4 py-2 border border-outline-variant/50 mb-6"
             >
               <span className="material-symbols-outlined text-on-surface-variant text-xl leading-none">search</span>
               <input

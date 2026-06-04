@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Product } from "@/types";
+import React from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { Product } from "@/types"
 
 interface ProductCardProps {
   product: Product;
@@ -13,7 +13,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-primary/30 transition-all duration-500 spice-shadow flex flex-col h-full">
       {/* Product Image Wrapper */}
-      <div className="h-64 overflow-hidden relative w-full bg-surface-container-low">
+      <div className="h-72 overflow-hidden relative w-full bg-surface-container-low">
         <Image
           src={product.image}
           alt={product.name}
@@ -30,7 +30,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Product Content */}
-      <div className="p-6 flex flex-col flex-grow">
+      <div className="p-8 flex flex-col flex-grow">
         <h3 className="font-headline text-lg font-bold text-primary mb-2">
           {product.name}
         </h3>
@@ -39,7 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.specs}
           </span>
         )}
-        <p className="text-on-surface-variant text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
+        <p className="text-on-surface-variant text-sm leading-relaxed mb-6 flex-grow line-clamp-4">
           {product.description}
         </p>
 
