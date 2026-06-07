@@ -50,7 +50,7 @@ export default function ContactPage() {
       <header className="relative pt-32 pb-20 bg-surface-container-low overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://lh3.googleusercontent.com/aida/ADBb0uhmetOTcF3lItwtUpDXOevVnsBQRkBWfWEi_qk_vEJRlXV2neKGMY7WerDMwk3rgbFK3NfFVjqDTQkrFRST19WspzTehFw16B0nLOqavxM5lwIszr5_-u3pRqCgDtC10TUUUZ6yvdk7YQ4hohy3I7liv-TsvYYJZcZ09nA0pLgu71z2_lu37bNks56VeltlmhTse82ni4vrubM1VBtYSa2aWDhpE_smQLTDgkcy5oU3D4O6DcdrdlTyO9o"
+            src="/images/hero_spices_banner.png"
             alt="Spices bags raw material background"
             fill
             priority

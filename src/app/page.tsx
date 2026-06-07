@@ -7,6 +7,7 @@ import ProductCard from "@/components/ProductCard";
 import FAQSection from "@/components/FAQSection";
 import { Product } from "@/types";
 import { products as fallbackProducts } from "@/data/products";
+import { getApiUrl } from "@/lib/api";
 
 export default function HomePage() {
   const [productsList, setProductsList] = useState<Product[]>([]);
@@ -20,7 +21,7 @@ export default function HomePage() {
     setSearchQuery(search);
 
     // 2. Fetch products from PHP API with JSON validation
-    fetch("/api/products.php")
+    fetch(getApiUrl("/api/products.php"))
       .then((res) => {
         // Ensure response is JSON
         const contentType = res.headers.get("content-type") || "";
@@ -69,7 +70,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/40 z-10"></div>
           <Image
-            src="https://lh3.googleusercontent.com/aida/ADBb0uhmetOTcF3lItwtUpDXOevVnsBQRkBWfWEi_qk_vEJRlXV2neKGMY7WerDMwk3rgbFK3NfFVjqDTQkrFRST19WspzTehFw16B0nLOqavxM5lwIszr5_-u3pRqCgDtC10TUUUZ6yvdk7YQ4hohy3I7liv-TsvYYJZcZ09nA0pLgu71z2_lu37bNks56VeltlmhTse82ni4vrubM1VBtYSa2aWDhpE_smQLTDgkcy5oU3D4O6DcdrdlTyO9o"
+            src="/images/hero_spices_banner.png"
             alt="Premium Spices Banner"
             fill
             priority
@@ -280,7 +281,7 @@ export default function HomePage() {
           {/* Sourcing Image Frame */}
           <div className="relative bg-surface-container-low rounded-3xl p-4 border border-outline-variant/20 shadow-md flex items-center justify-center h-[380px] overflow-hidden group">
             <Image
-              src="https://lh3.googleusercontent.com/aida/AP1WRLuxdf_3AUvevt8sQoaQ7EkPEe36dIkm9m5RsSOL8yUgVxybTruRMHGrHVATLvWplS3rM-OCp-QtcuEzW-ZxoM9t6NAXDUEFlPJqcTeIjvuA9G4tvK8ieTyZw_g0va-dLv-wS8s1LndqY_VrvhvwRkf21XLSs1n-66nXc-ZD2WblkwMifKPMxi0VPWwEBxuz7LFFF7wzuZ7HJkZll69W_Y0LB_1WzIWbdijNQ3kjHwJzdz9CQ8ObLmUU5lg"
+              src="/images/spice_plantation.png"
               alt="Indian Spice Plantation"
               fill
               className="object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"

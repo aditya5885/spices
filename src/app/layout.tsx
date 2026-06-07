@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: "Vintage Global Ventures",
     images: [
       {
-        url: "https://lh3.googleusercontent.com/aida/ADBb0uhmetOTcF3lItwtUpDXOevVnsBQRkBWfWEi_qk_vEJRlXV2neKGMY7WerDMwk3rgbFK3NfFVjqDTQkrFRST19WspzTehFw16B0nLOqavxM5lwIszr5_-u3pRqCgDtC10TUUUZ6yvdk7YQ4hohy3I7liv-TsvYYJZcZ09nA0pLgu71z2_lu37bNks56VeltlmhTse82ni4vrubM1VBtYSa2aWDhpE_smQLTDgkcy5oU3D4O6DcdrdlTyO9o",
+        url: "https://vintageglobaltrading.com/images/hero_spices_banner.png",
         width: 1200,
         height: 630,
         alt: "Vintage Global Ventures Banner",

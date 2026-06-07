@@ -15,7 +15,7 @@ export default function AboutPage() {
       <header className="relative pt-32 pb-24 md:pt-48 md:pb-36 bg-surface-container-low overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://lh3.googleusercontent.com/aida/AP1WRLuxdf_3AUvevt8sQoaQ7EkPEe36dIkm9m5RsSOL8yUgVxybTruRMHGrHVATLvWplS3rM-OCp-QtcuEzW-ZxoM9t6NAXDUEFlPJqcTeIjvuA9G4tvK8ieTyZw_g0va-dLv-wS8s1LndqY_VrvhvwRkf21XLSs1n-66nXc-ZD2WblkwMifKPMxi0VPWwEBxuz7LFFF7wzuZ7HJkZll69W_Y0LB_1WzIWbdijNQ3kjHwJzdz9CQ8ObLmUU5lg"
+            src="/images/spice_plantation.png"
             alt="Spice Plantation Sourcing"
             fill
             priority
@@ -72,7 +72,7 @@ export default function AboutPage() {
           {/* Sourcing Image Frame */}
           <div className="lg:col-span-5 relative h-[300px] lg:h-auto rounded-2xl overflow-hidden group border border-outline-variant/30">
             <Image
-              src="https://lh3.googleusercontent.com/aida/ADBb0ugEj1bM70PKpsX9ndC2l_FWynaz4brohmFVSK0hTiVvouhwCxg021KoCjqIDz_zIdPA6pW1WXqpGP1Ju0GZmFxoU7YqW8OH789M_QnCqUwzwruV_Lzcmk_95e7PSFM17mOq18O9myf6QiI6NUsq9CtxR5Vj68dWzjE38n_JAgvtO2Jo7p4-aahkU2MoXnsuVtFOzGdxGKPb7-kdtK2xdYTdP8g1HiuSnz2oGyFftcbXKCqSmLIN4_oDbQ"
+              src="/images/cinnamon_sorting.png"
               alt="Hands sorting high quality cinnamon quills"
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-110"

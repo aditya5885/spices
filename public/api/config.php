@@ -26,6 +26,13 @@ define('DB_NAME', 'spices_db');
 define('RAZORPAY_KEY_ID', 'rzp_test_lE1QvWvDylfC5P'); 
 define('RAZORPAY_KEY_SECRET', 'zVqF4h11s7YVp5uC7Y36Zf5E');
 
+// PayU Credentials (test credentials, client modifies on cPanel)
+define('PAYU_KEY', 'gmjiH9');
+define('PAYU_SALT', 'VLC5JLnZa4qJ5SzFBAtUe269Oztl1uPp');
+define('PAYU_MERCHANT_ID', 'your_merchant_id');
+define('PAYU_BASE_URL', 'https://test.payu.in');
+define('SITE_URL', 'http://vintageglobaltrading.com');
+
 // Admin Configuration (for product editing dashboard)
 define('ADMIN_PASSWORD', 'spices2026');
 

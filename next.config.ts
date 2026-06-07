@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
+  output: "export",
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -11,6 +14,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  ...(isDev ? {
+    async rewrites() {
+      return [
+        {
+          source: '/:path*.html',
+          destination: '/:path*',
+        },
+      ];
+    }
+  } : {})
 };
 
 export default nextConfig;
