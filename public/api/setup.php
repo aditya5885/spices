@@ -25,6 +25,14 @@ if (!$conn->query($sql)) {
 // Select Database
 $conn->select_db($dbName);
 
+// Helper function to check and add column if it doesn't exist
+function addColumnIfNotExists($conn, $table, $column, $definition) {
+    $result = $conn->query("SHOW COLUMNS FROM `$table` LIKE '$column'");
+    if ($result && $result->num_rows == 0) {
+        $conn->query("ALTER TABLE `$table` ADD `$column` $definition");
+    }
+}
+
 // 2. Create Products Table
 $createProductsTable = "CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -35,12 +43,18 @@ $createProductsTable = "CREATE TABLE IF NOT EXISTS products (
     image VARCHAR(512) NOT NULL,
     badge VARCHAR(100) NULL,
     specs VARCHAR(255) NULL,
+    stock_qty INT DEFAULT 50,
+    is_active TINYINT(1) DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 if (!$conn->query($createProductsTable)) {
     die("Error creating products table: " . $conn->error);
 }
+
+// Add columns to products table if they don't exist
+addColumnIfNotExists($conn, 'products', 'stock_qty', 'INT DEFAULT 50 AFTER specs');
+addColumnIfNotExists($conn, 'products', 'is_active', 'TINYINT(1) DEFAULT 1 AFTER stock_qty');
 
 // 3. Create Orders Table
 $createOrdersTable = "CREATE TABLE IF NOT EXISTS orders (
@@ -63,8 +77,13 @@ $createOrdersTable = "CREATE TABLE IF NOT EXISTS orders (
     total DECIMAL(10,2) NOT NULL,
     payment_method VARCHAR(50) NOT NULL,
     payment_status VARCHAR(50) DEFAULT 'pending',
+    order_status VARCHAR(50) DEFAULT 'new',
     razorpay_order_id VARCHAR(100) NULL,
     razorpay_payment_id VARCHAR(100) NULL,
+    payu_mihpayid VARCHAR(100) NULL,
+    payu_txnid VARCHAR(100) NULL,
+    payu_status VARCHAR(50) NULL,
+    payu_mode VARCHAR(50) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
@@ -72,86 +91,135 @@ if (!$conn->query($createOrdersTable)) {
     die("Error creating orders table: " . $conn->error);
 }
 
-// 4. Seed default products if table is empty
+// Add columns to orders table if they don't exist
+addColumnIfNotExists($conn, 'orders', 'order_status', "VARCHAR(50) DEFAULT 'new' AFTER payment_status");
+addColumnIfNotExists($conn, 'orders', 'payu_mihpayid', "VARCHAR(100) NULL AFTER razorpay_payment_id");
+addColumnIfNotExists($conn, 'orders', 'payu_txnid', "VARCHAR(100) NULL AFTER payu_mihpayid");
+addColumnIfNotExists($conn, 'orders', 'payu_status', "VARCHAR(50) NULL AFTER payu_txnid");
+addColumnIfNotExists($conn, 'orders', 'payu_mode', "VARCHAR(50) NULL AFTER payu_status");
+
+// 4. Create Settings Table
+$createSettingsTable = "CREATE TABLE IF NOT EXISTS settings (
+    key_name VARCHAR(100) PRIMARY KEY,
+    value_text TEXT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+if (!$conn->query($createSettingsTable)) {
+    die("Error creating settings table: " . $conn->error);
+}
+
+// Seed Settings Table
+$defaultSettings = [
+    'razorpay_key_id' => RAZORPAY_KEY_ID,
+    'razorpay_key_secret' => RAZORPAY_KEY_SECRET,
+    'payu_key' => PAYU_KEY,
+    'payu_salt' => PAYU_SALT,
+    'payu_merchant_id' => PAYU_MERCHANT_ID,
+    'payu_base_url' => PAYU_BASE_URL,
+    'site_url' => SITE_URL,
+    'admin_password' => ADMIN_PASSWORD,
+    'new_order_email' => 'admin@vintageglobaltrading.com'
+];
+
+$stmtSet = $conn->prepare("INSERT INTO settings (key_name, value_text) VALUES (?, ?) ON DUPLICATE KEY UPDATE key_name = key_name");
+foreach ($defaultSettings as $k => $v) {
+    $stmtSet->bind_param("ss", $k, $v);
+    $stmtSet->execute();
+}
+$stmtSet->close();
+
+// 5. Seed default products if table is empty
 $countResult = $conn->query("SELECT COUNT(*) as count FROM products");
 $rowCount = $countResult->fetch_assoc();
 $seeded = false;
 
-    $defaultProducts = [
-        [
-            'slug' => 'premium-turmeric',
-            'name' => 'Premium Turmeric',
-            'description' => 'Pure Alleppey Finger Turmeric with exceptionally high curcumin content, sun-dried to perfection.',
-            'price_in_inr' => 722.50,
-            'image' => '/images/turmeric.png',
-            'badge' => '95% CURCUMIN',
-            'specs' => 'Alleppey Finger, Organic Certified'
-        ],
-        [
-            'slug' => 'black-pepper',
-            'name' => 'Black Pepper',
-            'description' => 'King of spices, bold MG1 grade black pepper from the Malabar coast, rich in piperine.',
-            'price_in_inr' => 573.75,
-            'image' => '/images/black_pepper.png',
-            'badge' => 'MG1 BOLD GRADE',
-            'specs' => 'Malabar Bold, High Piperine'
-        ],
-        [
-            'slug' => 'green-cardamom',
-            'name' => 'Green Cardamom',
-            'description' => 'Handpicked extra bold green pods from Idukki, renowned for their intense aroma and fresh flavor.',
-            'price_in_inr' => 1870.00,
-            'image' => '/images/cardamom.png',
-            'badge' => '8MM+ BOLD',
-            'specs' => 'Idukki Premium Green, Extra Bold'
-        ],
-        [
-            'slug' => 'ceylon-cinnamon',
-            'name' => 'Ceylon Cinnamon',
-            'description' => 'Authentic thin-quilled cinnamon with a sweet, delicate aroma and low coumarin content.',
-            'price_in_inr' => 1572.50,
-            'image' => '/images/cinnamon.png',
-            'badge' => 'ALBA GRADE',
-            'specs' => 'Thin Quill Ceylon, Organic'
-        ],
-        [
-            'slug' => 'ginger-powder',
-            'name' => 'Dry Ginger Powder',
-            'description' => 'Zesty, sun-dried ginger ground into a fine powder. Perfect for tea, baking, and traditional recipes.',
-            'price_in_inr' => 450.00,
-            'image' => '/images/ginger_powder.png',
-            'badge' => 'ORGANIC DRY',
-            'specs' => 'Dry Ginger, Fine Ground'
-        ],
-        [
-            'slug' => 'clove-buds',
-            'name' => 'Premium Clove Buds',
-            'description' => 'Highly aromatic handpicked clove buds from Kerala. Rich in essential oils with a sweet, spicy pungency.',
-            'price_in_inr' => 950.00,
-            'image' => '/images/cloves.png',
-            'badge' => 'EXTRA BOLD',
-            'specs' => 'Handpicked Cloves, High Oil Content'
-        ]
-    ];
+$defaultProducts = [
+    [
+        'slug' => 'premium-turmeric',
+        'name' => 'Premium Turmeric',
+        'description' => 'Pure Alleppey Finger Turmeric with exceptionally high curcumin content, sun-dried to perfection.',
+        'price_in_inr' => 722.50,
+        'image' => '/images/turmeric.png',
+        'badge' => '95% CURCUMIN',
+        'specs' => 'Alleppey Finger, Organic Certified',
+        'stock_qty' => 120,
+        'is_active' => 1
+    ],
+    [
+        'slug' => 'black-pepper',
+        'name' => 'Black Pepper',
+        'description' => 'King of spices, bold MG1 grade black pepper from the Malabar coast, rich in piperine.',
+        'price_in_inr' => 573.75,
+        'image' => '/images/black_pepper.png',
+        'badge' => 'MG1 BOLD GRADE',
+        'specs' => 'Malabar Bold, High Piperine',
+        'stock_qty' => 85,
+        'is_active' => 1
+    ],
+    [
+        'slug' => 'green-cardamom',
+        'name' => 'Green Cardamom',
+        'description' => 'Handpicked extra bold green pods from Idukki, renowned for their intense aroma and fresh flavor.',
+        'price_in_inr' => 1870.00,
+        'image' => '/images/cardamom.png',
+        'badge' => '8MM+ BOLD',
+        'specs' => 'Idukki Premium Green, Extra Bold',
+        'stock_qty' => 45,
+        'is_active' => 1
+    ],
+    [
+        'slug' => 'ceylon-cinnamon',
+        'name' => 'Ceylon Cinnamon',
+        'description' => 'Authentic thin-quilled cinnamon with a sweet, delicate aroma and low coumarin content.',
+        'price_in_inr' => 1572.50,
+        'image' => '/images/cinnamon.png',
+        'badge' => 'ALBA GRADE',
+        'specs' => 'Thin Quill Ceylon, Organic',
+        'stock_qty' => 60,
+        'is_active' => 1
+    ],
+    [
+        'slug' => 'ginger-powder',
+        'name' => 'Dry Ginger Powder',
+        'description' => 'Zesty, sun-dried ginger ground into a fine powder. Perfect for tea, baking, and traditional recipes.',
+        'price_in_inr' => 450.00,
+        'image' => '/images/ginger_powder.png',
+        'badge' => 'ORGANIC DRY',
+        'specs' => 'Dry Ginger, Fine Ground',
+        'stock_qty' => 150,
+        'is_active' => 1
+    ],
+    [
+        'slug' => 'clove-buds',
+        'name' => 'Premium Clove Buds',
+        'description' => 'Highly aromatic handpicked clove buds from Kerala. Rich in essential oils with a sweet, spicy pungency.',
+        'price_in_inr' => 950.00,
+        'image' => '/images/cloves.png',
+        'badge' => 'EXTRA BOLD',
+        'specs' => 'Handpicked Cloves, High Oil Content',
+        'stock_qty' => 70,
+        'is_active' => 1
+    ]
+];
 
-    $stmtInsert = $conn->prepare("INSERT INTO products (slug, name, description, price_in_inr, image, badge, specs) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmtUpdate = $conn->prepare("UPDATE products SET image = ? WHERE slug = ?");
-    
-    foreach ($defaultProducts as $p) {
-        if ($rowCount['count'] == 0) {
-            $stmtInsert->bind_param("sssdsss", $p['slug'], $p['name'], $p['description'], $p['price_in_inr'], $p['image'], $p['badge'], $p['specs']);
-            $stmtInsert->execute();
-        } else {
-            // Update the image path for existing products matching the default slugs
-            $stmtUpdate->bind_param("ss", $p['image'], $p['slug']);
-            $stmtUpdate->execute();
-        }
+$stmtInsert = $conn->prepare("INSERT INTO products (slug, name, description, price_in_inr, image, badge, specs, stock_qty, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmtUpdate = $conn->prepare("UPDATE products SET image = ?, stock_qty = ?, is_active = ? WHERE slug = ?");
+
+foreach ($defaultProducts as $p) {
+    if ($rowCount['count'] == 0) {
+        $stmtInsert->bind_param("sssdsssii", $p['slug'], $p['name'], $p['description'], $p['price_in_inr'], $p['image'], $p['badge'], $p['specs'], $p['stock_qty'], $p['is_active']);
+        $stmtInsert->execute();
+        $seeded = true;
+    } else {
+        // Update the image path, stock_qty, is_active for existing products matching default slugs
+        $stmtUpdate->bind_param("siis", $p['image'], $p['stock_qty'], $p['is_active'], $p['slug']);
+        $stmtUpdate->execute();
     }
-    
-    $stmtInsert->close();
-    $stmtUpdate->close();
-    $seeded = true;
 }
+
+$stmtInsert->close();
+$stmtUpdate->close();
 
 $conn->close();
 ?>
@@ -180,10 +248,10 @@ $conn->close();
         </p>
         <div class="details">
             <strong>Database Target:</strong> <code><?php echo htmlspecialchars($dbName); ?></code><br>
-            <strong>Tables created:</strong> <code>products</code>, <code>orders</code><br>
-            <strong>Seeding status:</strong> <?php echo $seeded ? 'Populated 6 default premium spices' : 'Already populated with active catalog'; ?>
+            <strong>Tables created/updated:</strong> <code>products</code>, <code>orders</code>, <code>settings</code><br>
+            <strong>Seeding status:</strong> <?php echo $seeded ? 'Populated default premium spices & system settings' : 'Upgraded tables to support stock and status'; ?>
         </div>
-        <a href="admin_products.php" class="btn">Go to Admin Dashboard</a>
+        <a href="admin.php" class="btn">Go to Admin Dashboard</a>
     </div>
 </body>
 </html>

@@ -10,6 +10,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const isOutOfStock = product.stockQty !== undefined && product.stockQty <= 0;
+
   return (
     <div className="group bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:border-primary/30 transition-all duration-500 spice-shadow flex flex-col h-full">
       {/* Product Image Wrapper */}
@@ -22,7 +24,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="object-cover group-hover:scale-110 transition-transform duration-700"
           priority={product.slug === "premium-turmeric"}
         />
-        {product.badge && (
+        {isOutOfStock ? (
+          <div className="absolute top-4 left-4 bg-error text-white font-headline font-bold text-[10px] px-3 py-1 rounded-full tracking-wider shadow-sm uppercase">
+            Out of Stock
+          </div>
+        ) : product.badge && (
           <div className="absolute top-4 right-4 bg-secondary text-white font-headline font-bold text-[10px] px-3 py-1 rounded-full tracking-wider shadow-sm uppercase">
             {product.badge}
           </div>
@@ -44,11 +50,17 @@ export default function ProductCard({ product }: ProductCardProps) {
         </p>
 
         {/* Action Button */}
-        <Link href={`/order?product=${product.slug}`} className="block w-full">
-          <button className="w-full py-3 rounded-lg border border-primary text-primary font-headline font-bold text-xs tracking-wider uppercase hover:bg-primary hover:text-white transition-all duration-300">
-            Order Now
+        {isOutOfStock ? (
+          <button disabled className="w-full py-3 rounded-lg border border-outline/50 bg-surface-variant/30 text-outline font-headline font-bold text-xs tracking-wider uppercase cursor-not-allowed">
+            Out of Stock
           </button>
-        </Link>
+        ) : (
+          <Link href={`/order?product=${product.slug}`} className="block w-full">
+            <button className="w-full py-3 rounded-lg border border-primary text-primary font-headline font-bold text-xs tracking-wider uppercase hover:bg-primary hover:text-white transition-all duration-300">
+              Order Now
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );

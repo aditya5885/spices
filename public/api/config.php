@@ -54,4 +54,49 @@ function getDB() {
     $conn->set_charset("utf8mb4");
     return $conn;
 }
+
+// Helper function to get settings from settings table, falling back to constants if table/key doesn't exist
+function getSetting($key, $default = null) {
+    // If table doesn't exist or DB connection fails, use predefined constants as fallbacks
+    $fallbackConstants = [
+        'razorpay_key_id' => 'RAZORPAY_KEY_ID',
+        'razorpay_key_secret' => 'RAZORPAY_KEY_SECRET',
+        'payu_key' => 'PAYU_KEY',
+        'payu_salt' => 'PAYU_SALT',
+        'payu_merchant_id' => 'PAYU_MERCHANT_ID',
+        'payu_base_url' => 'PAYU_BASE_URL',
+        'site_url' => 'SITE_URL',
+        'admin_password' => 'ADMIN_PASSWORD'
+    ];
+
+    try {
+        $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        if ($conn->connect_error) {
+            throw new Exception("DB Connection failed");
+        }
+        $conn->set_charset("utf8mb4");
+        
+        $stmt = $conn->prepare("SELECT value_text FROM settings WHERE key_name = ?");
+        if ($stmt) {
+            $stmt->bind_param("s", $key);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($row = $result->fetch_assoc()) {
+                $stmt->close();
+                $conn->close();
+                return $row['value_text'];
+            }
+            $stmt->close();
+        }
+        $conn->close();
+    } catch (Exception $e) {
+        // Silent fail, fallback to constants
+    }
+
+    if (isset($fallbackConstants[$key]) && defined($fallbackConstants[$key])) {
+        return constant($fallbackConstants[$key]);
+    }
+    
+    return $default;
+}
 ?>

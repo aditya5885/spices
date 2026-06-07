@@ -7,6 +7,8 @@ export interface Product {
   image: string;
   badge?: string;
   specs?: string;
+  stockQty?: number;
+  isActive?: number;
 }
 
 export interface OrderFormInputs {

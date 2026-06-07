@@ -4,7 +4,7 @@ require_once 'config.php';
 $conn = getDB();
 $conn->select_db(DB_NAME);
 
-$sql = "SELECT * FROM products ORDER BY id ASC";
+$sql = "SELECT * FROM products WHERE is_active = 1 ORDER BY id ASC";
 $result = $conn->query($sql);
 
 $products = [];
@@ -18,7 +18,9 @@ if ($result && $result->num_rows > 0) {
             "priceInINR" => floatval($row['price_in_inr']),
             "image" => $row['image'],
             "badge" => $row['badge'],
-            "specs" => $row['specs']
+            "specs" => $row['specs'],
+            "stockQty" => intval($row['stock_qty']),
+            "isActive" => intval($row['is_active'])
         ];
     }
 }

@@ -143,8 +143,13 @@ function OrderFormContent() {
   // Total domestic order price
   const totalINR = subtotalINR + shippingINR + codFeeINR;
 
+  // Stock guard: block checkout if product is out of stock
+  const isOutOfStock =
+    selectedProduct.stockQty !== undefined && selectedProduct.stockQty <= 0;
+
   const handleNextStep = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isOutOfStock) return; // hard block
     setStep(2);
   };
 
@@ -625,12 +630,25 @@ function OrderFormContent() {
 
               {/* Submit to Step 2 */}
               <div className="pt-4">
+                {isOutOfStock && (
+                  <div className="mb-4 bg-error/10 border border-error/20 p-4 rounded-xl flex items-center gap-3">
+                    <span className="material-symbols-outlined text-error">error</span>
+                    <p className="text-error font-semibold text-sm">
+                      This product is currently out of stock. We'll restock soon.
+                    </p>
+                  </div>
+                )}
                 <button
                   type="submit"
-                  className="w-full bg-primary hover:bg-primary-container text-white py-4 rounded-lg font-headline font-bold text-xs tracking-wider uppercase transition-colors duration-300 shadow-md flex items-center justify-center gap-2"
+                  disabled={isOutOfStock}
+                  className={`w-full py-4 rounded-lg font-headline font-bold text-xs tracking-wider uppercase transition-colors duration-300 shadow-md flex items-center justify-center gap-2 ${
+                    isOutOfStock 
+                      ? "bg-surface-variant text-on-surface-variant cursor-not-allowed border border-outline-variant/50"
+                      : "bg-primary hover:bg-primary-container text-white"
+                  }`}
                 >
-                  Proceed to Payment
-                  <span className="material-symbols-outlined text-sm leading-none">arrow_forward</span>
+                  {isOutOfStock ? "Out of Stock" : "Proceed to Payment"}
+                  {!isOutOfStock && <span className="material-symbols-outlined text-sm leading-none">arrow_forward</span>}
                 </button>
               </div>
             </form>

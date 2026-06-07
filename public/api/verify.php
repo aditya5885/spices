@@ -29,8 +29,33 @@ foreach ($requiredFields as $field) {
 $conn = getDB();
 $conn->select_db(DB_NAME);
 
+// Check stock level first
+$stmtStock = $conn->prepare("SELECT stock_qty FROM products WHERE slug = ?");
+$stmtStock->bind_param("s", $input['product_slug']);
+$stmtStock->execute();
+$resStock = $stmtStock->get_result();
+if ($rowStock = $resStock->fetch_assoc()) {
+    $currentStock = intval($rowStock['stock_qty']);
+    $requestedQty = intval($input['quantity']);
+    if ($currentStock < $requestedQty) {
+        http_response_code(400);
+        echo json_encode(["error" => "Insufficient stock. Only {$currentStock} items available."]);
+        $stmtStock->close();
+        $conn->close();
+        exit();
+    }
+} else {
+    http_response_code(400);
+    echo json_encode(["error" => "Product not found."]);
+    $stmtStock->close();
+    $conn->close();
+    exit();
+}
+$stmtStock->close();
+
 $orderId = '';
 $paymentStatus = 'pending';
+$orderStatus = 'new';
 $razorpayOrderId = isset($input['razorpay_order_id']) ? $input['razorpay_order_id'] : null;
 $razorpayPaymentId = isset($input['razorpay_payment_id']) ? $input['razorpay_payment_id'] : null;
 $razorpaySignature = isset($input['razorpay_signature']) ? $input['razorpay_signature'] : null;
@@ -39,17 +64,19 @@ if ($paymentMethod === 'razorpay') {
     if (!$razorpayOrderId || !$razorpayPaymentId || !$razorpaySignature) {
         http_response_code(400);
         echo json_encode(["error" => "Missing Razorpay verification parameters."]);
+        $conn->close();
         exit();
     }
 
     // Verify cryptographic signature: HMAC-SHA256(order_id + "|" + payment_id, secret)
-    $keySecret = RAZORPAY_KEY_SECRET;
+    $keySecret = getSetting('razorpay_key_secret');
     $text = $razorpayOrderId . "|" . $razorpayPaymentId;
     $generatedSignature = hash_hmac("sha256", $text, $keySecret);
 
     if ($generatedSignature !== $razorpaySignature) {
         http_response_code(400);
         echo json_encode(["error" => "Payment verification failed: cryptographic signature mismatch."]);
+        $conn->close();
         exit();
     }
 
@@ -58,15 +85,16 @@ if ($paymentMethod === 'razorpay') {
 } else {
     // Generate a unique local order ID for COD/Mock payments
     $orderId = 'EXP-' . time() . '-' . rand(100, 999);
-    $paymentStatus = ($paymentMethod === 'cod') ? 'pending' : 'completed'; // Mock Paytm/PayU are marked completed
+    $paymentStatus = ($paymentMethod === 'cod') ? 'pending' : 'completed';
 }
 
 // Insert order record into DB
-$stmt = $conn->prepare("INSERT INTO orders (order_id, customer_name, email, phone, shipping_address, city, state, pin_code, notes, product_slug, pack_size, quantity, subtotal, shipping_cost, cod_fee, total, payment_method, payment_status, razorpay_order_id, razorpay_payment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = $conn->prepare("INSERT INTO orders (order_id, customer_name, email, phone, shipping_address, city, state, pin_code, notes, product_slug, pack_size, quantity, subtotal, shipping_cost, cod_fee, total, payment_method, payment_status, order_status, razorpay_order_id, razorpay_payment_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 if (!$stmt) {
     http_response_code(500);
     echo json_encode(["error" => "Database statement preparation failed: " . $conn->error]);
+    $conn->close();
     exit();
 }
 
@@ -78,7 +106,7 @@ $total = floatval($input['total']);
 $quantity = intval($input['quantity']);
 
 $stmt->bind_param(
-    "sssssssssssidddddsss",
+    "sssssssssssidddddssss",
     $orderId,
     $input['customer_name'],
     $input['email'],
@@ -97,11 +125,18 @@ $stmt->bind_param(
     $total,
     $paymentMethod,
     $paymentStatus,
+    $orderStatus,
     $razorpayOrderId,
     $razorpayPaymentId
 );
 
 if ($stmt->execute()) {
+    // Payment verified and order saved successfully - decrement stock
+    $stmtDec = $conn->prepare("UPDATE products SET stock_qty = stock_qty - ? WHERE slug = ?");
+    $stmtDec->bind_param("is", $quantity, $input['product_slug']);
+    $stmtDec->execute();
+    $stmtDec->close();
+
     echo json_encode([
         "verified" => true,
         "order_id" => $orderId,
