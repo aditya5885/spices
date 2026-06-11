@@ -147,6 +147,11 @@ function OrderFormContent() {
   const isOutOfStock =
     selectedProduct.stockQty !== undefined && selectedProduct.stockQty <= 0;
 
+  const shouldUseDemoFallback = () => {
+    if (typeof window === "undefined") return false;
+    return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  };
+
   const handleNextStep = (e: React.FormEvent) => {
     e.preventDefault();
     if (isOutOfStock) return; // hard block
@@ -252,11 +257,15 @@ function OrderFormContent() {
           alert("Razorpay checkout script not loaded. Check connection or try again.");
         }
       } catch (err: any) {
-        console.warn("Razorpay order generation failed, simulating payment for static demo:", err);
-        const mockOrderId = "pay_rzp_mock_" + Date.now();
-        window.location.href = `/thank-you.html?orderId=order_rzp_mock_${Date.now()}&paymentId=${mockOrderId}&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
-          formData.fullName
-        )}&total=${totalINR}&method=Razorpay`;
+        console.warn("Razorpay order generation failed:", err);
+        if (shouldUseDemoFallback()) {
+          const mockOrderId = "pay_rzp_mock_" + Date.now();
+          window.location.href = `/thank-you.html?orderId=order_rzp_mock_${Date.now()}&paymentId=${mockOrderId}&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
+            formData.fullName
+          )}&total=${totalINR}&method=Razorpay`;
+        } else {
+          alert("Unable to start Razorpay checkout right now. Please try again.");
+        }
       } finally {
         setIsProcessing(false);
       }
@@ -303,16 +312,81 @@ function OrderFormContent() {
         document.body.appendChild(form);
         form.submit();
       } catch (err: any) {
-        console.warn("PayU redirect failed, simulating checkout for static demo:", err);
-        const mockOrderId = "pay_payu_mock_" + Date.now();
-        window.location.href = `/thank-you.html?orderId=order_payu_mock_${Date.now()}&paymentId=${mockOrderId}&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
-          formData.fullName
-        )}&total=${totalINR}&method=PayU`;
+        console.warn("PayU redirect failed:", err);
+        if (shouldUseDemoFallback()) {
+          const mockOrderId = "pay_payu_mock_" + Date.now();
+          window.location.href = `/thank-you.html?orderId=order_payu_mock_${Date.now()}&paymentId=${mockOrderId}&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
+            formData.fullName
+          )}&total=${totalINR}&method=PayU`;
+        } else {
+          alert("Unable to start PayU checkout right now. Please try again.");
+        }
+      } finally {
+        setIsProcessing(false);
+      }
+    } else if (paymentMethod === "paytm") {
+      setIsProcessing(true);
+      try {
+        const res = await fetch(getApiUrl("/api/paytm_create_order.php"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: totalINR.toString(),
+            productInfo: `Order: ${quantity}x ${packSize} of ${selectedProduct.name}`,
+            firstName: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            udf1: selectedProduct.slug,
+            udf2: packSize,
+            udf3: quantity.toString(),
+            udf4: `${formData.city}, ${formData.state}, ${formData.postalCode}`,
+            udf5: formData.address,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || "Failed to initialize Paytm payment session.");
+        }
+
+        const { paytmUrl, txnToken, mid, orderId } = data;
+
+        // Build and submit hidden form to redirect to Paytm Hosted Checkout
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = paytmUrl;
+
+        const inputs = {
+          mid: mid,
+          orderId: orderId,
+          txnToken: txnToken
+        };
+
+        Object.entries(inputs).forEach(([k, v]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = k;
+          input.value = v as string;
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+      } catch (err: any) {
+        console.warn("Paytm redirect failed:", err);
+        if (shouldUseDemoFallback()) {
+          const mockOrderId = "pay_paytm_mock_" + Date.now();
+          window.location.href = `/thank-you.html?orderId=order_paytm_mock_${Date.now()}&paymentId=${mockOrderId}&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
+            formData.fullName
+          )}&total=${totalINR}&method=Paytm`;
+        } else {
+          alert("Unable to start Paytm checkout right now. Please try again.");
+        }
       } finally {
         setIsProcessing(false);
       }
     } else {
-      // For Paytm and COD - save the order in PHP database
+      // For COD - save the order in PHP database
       setIsProcessing(true);
       try {
         const verifyResponse = await fetch(getApiUrl("/api/verify.php"), {
@@ -344,19 +418,15 @@ function OrderFormContent() {
           throw new Error(verifyData.error || "Failed to register order in database.");
         }
 
-        window.location.href = `/thank-you.html?orderId=${verifyData.order_id}&paymentId=${
-          paymentMethod === "cod" ? "cod_pending" : "pay_" + paymentMethod + "_" + verifyData.order_id
-        }&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
+        window.location.href = `/thank-you.html?orderId=${verifyData.order_id}&paymentId=cod_pending&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
           formData.fullName
-        )}&total=${totalINR}&method=${paymentMethod === "cod" ? "COD" : "Paytm"}`;
+        )}&total=${totalINR}&method=COD`;
       } catch (err: any) {
         console.warn("Database order registration failed, simulating offline success for demo:", err);
         const mockOrderId = "EXP-" + Date.now() + "-" + Math.floor(100 + Math.random() * 900);
-        window.location.href = `/thank-you.html?orderId=${mockOrderId}&paymentId=${
-          paymentMethod === "cod" ? "cod_pending" : "pay_" + paymentMethod + "_" + mockOrderId
-        }&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
+        window.location.href = `/thank-you.html?orderId=${mockOrderId}&paymentId=cod_pending&product=${selectedProduct.slug}&size=${packSize}&qty=${quantity}&name=${encodeURIComponent(
           formData.fullName
-        )}&total=${totalINR}&method=${paymentMethod === "cod" ? "COD" : "Paytm"}`;
+        )}&total=${totalINR}&method=COD`;
       } finally {
         setIsProcessing(false);
       }

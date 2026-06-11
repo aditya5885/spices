@@ -111,10 +111,10 @@ if (!$stmtOrder->execute()) {
 $stmtOrder->close();
 $conn->close();
 
-$payuKey = getSetting('payu_key');
-$payuSalt = getSetting('payu_salt');
-$payuBaseUrl = getSetting('payu_base_url');
-$siteUrl = getSetting('site_url');
+$payuKey = PAYU_KEY;
+$payuSalt = PAYU_SALT;
+$payuBaseUrl = PAYU_BASE_URL;
+$siteUrl = SITE_URL;
 
 $surl = rtrim($siteUrl, '/') . '/api/payu_callback.php';
 $furl = rtrim($siteUrl, '/') . '/api/payu_callback.php';

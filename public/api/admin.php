@@ -842,6 +842,39 @@ if (!$loggedIn) {
                             </div>
                         </div>
 
+                        <div class="settings-section-title">Paytm Settings (Test/Live)</div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label for="setting-paytm_mid">Paytm Merchant ID</label>
+                                <input type="text" id="setting-paytm_mid" class="form-control" name="paytm_mid">
+                            </div>
+                            <div class="form-group">
+                                <label for="setting-paytm_merchant_key">Paytm Merchant Key</label>
+                                <input type="text" id="setting-paytm_merchant_key" class="form-control" name="paytm_merchant_key">
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label for="setting-paytm_website">Paytm Website</label>
+                                <input type="text" id="setting-paytm_website" class="form-control" name="paytm_website">
+                            </div>
+                            <div class="form-group">
+                                <label for="setting-paytm_industry_type">Paytm Industry Type</label>
+                                <input type="text" id="setting-paytm_industry_type" class="form-control" name="paytm_industry_type">
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label for="setting-paytm_channel_id">Paytm Channel ID</label>
+                                <input type="text" id="setting-paytm_channel_id" class="form-control" name="paytm_channel_id">
+                            </div>
+                            <div class="form-group">
+                                <label for="setting-paytm_base_url">Paytm Base URL</label>
+                                <input type="text" id="setting-paytm_base_url" class="form-control" name="paytm_base_url">
+                                <span style="font-size:0.75rem; color: var(--text-muted);">Use <code>https://securestage.paytmpayments.com</code> for sandbox, <code>https://securegw.paytm.in</code> for live.</span>
+                            </div>
+                        </div>
+
                         <div class="settings-section-title">General settings</div>
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                             <div class="form-group">
@@ -1459,6 +1492,9 @@ if (!$loggedIn) {
                     ${o.razorpay_payment_id ? `<strong>Razorpay Payment ID:</strong> <code>${o.razorpay_payment_id}</code><br>` : ''}
                     ${o.payu_mihpayid ? `<strong>PayU Transaction ID (mihpayid):</strong> <code>${o.payu_mihpayid}</code><br>` : ''}
                     ${o.payu_txnid ? `<strong>PayU Local Txn ID:</strong> <code>${o.payu_txnid}</code><br>` : ''}
+                    ${o.paytm_txnid ? `<strong>Paytm Transaction ID:</strong> <code>${o.paytm_txnid}</code><br>` : ''}
+                    ${o.paytm_status ? `<strong>Paytm Status:</strong> <code>${o.paytm_status}</code><br>` : ''}
+                    ${o.paytm_mode ? `<strong>Paytm Mode:</strong> <code>${o.paytm_mode}</code><br>` : ''}
                     <strong>Notes/Instructions:</strong> ${o.notes || 'None provided'}
                 </div>
             `;

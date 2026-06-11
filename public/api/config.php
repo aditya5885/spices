@@ -18,9 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Database Credentials (configured for local setup, client modifies on cPanel)
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'spices_db');
+define('DB_USER', 'vintae75_spices_user');
+define('DB_PASS', 'SpicesPay2026!Aa9');
+define('DB_NAME', 'vintae75_spices_db');
 
 // Razorpay Credentials (test credentials, client modifies on cPanel)
 define('RAZORPAY_KEY_ID', 'rzp_test_lE1QvWvDylfC5P'); 
@@ -31,7 +31,15 @@ define('PAYU_KEY', 'gmjiH9');
 define('PAYU_SALT', 'VLC5JLnZa4qJ5SzFBAtUe269Oztl1uPp');
 define('PAYU_MERCHANT_ID', 'your_merchant_id');
 define('PAYU_BASE_URL', 'https://test.payu.in');
-define('SITE_URL', 'http://vintageglobaltrading.com');
+define('SITE_URL', 'https://vintageglobaltrading.com');
+
+// Paytm Credentials (test credentials, client modifies on cPanel)
+define('PAYTM_MID', 'rdWAFo18634751496152');
+define('PAYTM_MERCHANT_KEY', 'E9#KULkD&o8kuU&H');
+define('PAYTM_WEBSITE', 'WEBSTAGING');
+define('PAYTM_INDUSTRY_TYPE', 'Retail');
+define('PAYTM_CHANNEL_ID', 'WEB');
+define('PAYTM_BASE_URL', 'https://securestage.paytmpayments.com');
 
 // Admin Configuration (for product editing dashboard)
 define('ADMIN_PASSWORD', 'spices2026');
@@ -65,6 +73,12 @@ function getSetting($key, $default = null) {
         'payu_salt' => 'PAYU_SALT',
         'payu_merchant_id' => 'PAYU_MERCHANT_ID',
         'payu_base_url' => 'PAYU_BASE_URL',
+        'paytm_mid' => 'PAYTM_MID',
+        'paytm_merchant_key' => 'PAYTM_MERCHANT_KEY',
+        'paytm_website' => 'PAYTM_WEBSITE',
+        'paytm_industry_type' => 'PAYTM_INDUSTRY_TYPE',
+        'paytm_channel_id' => 'PAYTM_CHANNEL_ID',
+        'paytm_base_url' => 'PAYTM_BASE_URL',
         'site_url' => 'SITE_URL',
         'admin_password' => 'ADMIN_PASSWORD'
     ];

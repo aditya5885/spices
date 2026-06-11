@@ -97,6 +97,9 @@ addColumnIfNotExists($conn, 'orders', 'payu_mihpayid', "VARCHAR(100) NULL AFTER 
 addColumnIfNotExists($conn, 'orders', 'payu_txnid', "VARCHAR(100) NULL AFTER payu_mihpayid");
 addColumnIfNotExists($conn, 'orders', 'payu_status', "VARCHAR(50) NULL AFTER payu_txnid");
 addColumnIfNotExists($conn, 'orders', 'payu_mode', "VARCHAR(50) NULL AFTER payu_status");
+addColumnIfNotExists($conn, 'orders', 'paytm_txnid', "VARCHAR(100) NULL AFTER payu_mode");
+addColumnIfNotExists($conn, 'orders', 'paytm_status', "VARCHAR(50) NULL AFTER paytm_txnid");
+addColumnIfNotExists($conn, 'orders', 'paytm_mode', "VARCHAR(50) NULL AFTER paytm_status");
 
 // 4. Create Settings Table
 $createSettingsTable = "CREATE TABLE IF NOT EXISTS settings (
@@ -117,6 +120,12 @@ $defaultSettings = [
     'payu_salt' => PAYU_SALT,
     'payu_merchant_id' => PAYU_MERCHANT_ID,
     'payu_base_url' => PAYU_BASE_URL,
+    'paytm_mid' => PAYTM_MID,
+    'paytm_merchant_key' => PAYTM_MERCHANT_KEY,
+    'paytm_website' => PAYTM_WEBSITE,
+    'paytm_industry_type' => PAYTM_INDUSTRY_TYPE,
+    'paytm_channel_id' => PAYTM_CHANNEL_ID,
+    'paytm_base_url' => PAYTM_BASE_URL,
     'site_url' => SITE_URL,
     'admin_password' => ADMIN_PASSWORD,
     'new_order_email' => 'admin@vintageglobaltrading.com'

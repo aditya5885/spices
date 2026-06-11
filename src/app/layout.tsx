@@ -1,22 +1,9 @@
 import type { Metadata } from "next";
-import { Montserrat, Inter } from "next/font/google";
 import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import "./globals.css";
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-  weight: ["400", "600", "700", "800"],
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["300", "400", "500", "600"],
-});
 
 export const metadata: Metadata = {
   title: {
@@ -48,11 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${montserrat.variable} ${inter.variable} h-full antialiased scroll-smooth`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className="h-full antialiased scroll-smooth" suppressHydrationWarning>
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
