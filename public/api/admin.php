@@ -2,6 +2,9 @@
 session_start();
 require_once 'config.php';
 
+// Override JSON content-type from config.php — this page serves HTML
+header("Content-Type: text/html; charset=UTF-8");
+
 // Create database connection
 $conn = getDB();
 $conn->select_db(DB_NAME);
