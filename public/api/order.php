@@ -16,8 +16,8 @@ if ($amount === null || !is_numeric($amount)) {
     exit();
 }
 
-$keyId = RAZORPAY_KEY_ID;
-$keySecret = RAZORPAY_KEY_SECRET;
+$keyId = getSetting('razorpay_key_id');
+$keySecret = getSetting('razorpay_key_secret');
 
 if (empty($keyId) || empty($keySecret) || $keyId === 'rzp_test_xxxxxx') {
     http_response_code(500);

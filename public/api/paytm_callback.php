@@ -10,8 +10,8 @@ $paymentMode = isset($_POST['PAYMENTMODE']) ? $_POST['PAYMENTMODE'] : '';
 $respMsg = isset($_POST['RESPMSG']) ? $_POST['RESPMSG'] : '';
 $checksum = isset($_POST['CHECKSUMHASH']) ? $_POST['CHECKSUMHASH'] : '';
 
-$paytmMerchantKey = PAYTM_MERCHANT_KEY;
-$siteUrl = SITE_URL;
+$paytmMerchantKey = getSetting('paytm_merchant_key');
+$siteUrl = getSetting('site_url');
 $siteUrl = rtrim($siteUrl, '/');
 
 // Verify response signature

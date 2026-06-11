@@ -106,12 +106,12 @@ if (!$stmtOrder->execute()) {
 $stmtOrder->close();
 $conn->close();
 
-// Fetch Paytm configurations from settings
-$paytmMid = PAYTM_MID;
-$paytmMerchantKey = PAYTM_MERCHANT_KEY;
-$paytmWebsite = PAYTM_WEBSITE;
-$paytmBaseUrl = PAYTM_BASE_URL;
-$siteUrl = SITE_URL;
+// Fetch Paytm configurations from database settings
+$paytmMid = getSetting('paytm_mid');
+$paytmMerchantKey = getSetting('paytm_merchant_key');
+$paytmWebsite = getSetting('paytm_website');
+$paytmBaseUrl = getSetting('paytm_base_url');
+$siteUrl = getSetting('site_url');
 
 $callbackUrl = rtrim($siteUrl, '/') . '/api/paytm_callback.php';
 

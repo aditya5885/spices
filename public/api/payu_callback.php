@@ -21,8 +21,8 @@ $unmappedstatus = isset($_POST['unmappedstatus']) ? $_POST['unmappedstatus'] : '
 $net_amount_debit = isset($_POST['net_amount_debit']) ? $_POST['net_amount_debit'] : '';
 $additionalCharges = isset($_POST['additionalCharges']) ? $_POST['additionalCharges'] : '';
 
-$payuKey = PAYU_KEY;
-$payuSalt = PAYU_SALT;
+$payuKey = getSetting('payu_key');
+$payuSalt = getSetting('payu_salt');
 
 // Calculate reverse hash
 // hash = sha512(salt|status||||||udf5|udf4|udf3|udf2|udf1|email|firstname|productinfo|amount|txnid|key)
@@ -37,7 +37,7 @@ if ($additionalCharges) {
 $calculatedHash = hash('sha512', $finalSequence);
 $isSignatureValid = (strtolower($calculatedHash) === strtolower($hash));
 
-$siteUrl = SITE_URL;
+$siteUrl = getSetting('site_url');
 $siteUrl = rtrim($siteUrl, '/');
 
 if (!$isSignatureValid) {

@@ -36,135 +36,157 @@ $loggedIn = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] 
 
 // If not logged in, render the login page
 if (!$loggedIn) {
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Login - Exportia Spices</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #00450d;
-            --accent: #845e3c;
-            --bg: #fbfaf8;
-            --text: #2d241e;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #002206 0%, #00450d 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 45px rgba(0,0,0,0.25);
-            max-width: 420px;
-            width: 100%;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .logo-img {
-            max-height: 80px;
-            margin-bottom: 25px;
-        }
-        h2 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--primary);
-            font-size: 1.6rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        p {
-            color: #6e645e;
-            font-size: 0.95rem;
-            margin-bottom: 30px;
-        }
-        .error-msg {
-            background-color: #ffebee;
-            color: #c62828;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.85rem;
-            text-align: left;
-            border: 1px solid #ffcdd2;
-        }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #2d241e;
-        }
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #eae5dc;
-            border-radius: 8px;
-            font-size: 1rem;
-            background-color: #FAF9F6;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        input[type="password"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0,69,13,0.15);
-            background-color: white;
-        }
-        .btn-submit {
-            width: 100%;
-            background-color: var(--primary);
-            color: white;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0,69,13,0.2);
-            margin-top: 10px;
-        }
-        .btn-submit:hover {
-            background-color: #003309;
-            transform: translateY(-1px);
-        }
-    </style>
-</head>
-<body>
-    <div class="login-card">
-        <img src="https://vintageglobaltrading.com/images/headlogo_trimmed.png" class="logo-img" alt="Exportia Spices">
-        <h2>Dashboard Access</h2>
-        <p>Enter your management security password</p>
-        
-        <?php if (!empty($loginError)): ?>
-            <div class="error-msg"><?php echo htmlspecialchars($loginError); ?></div>
-        <?php endif; ?>
-        
-        <form method="POST" action="admin.php">
-            <input type="hidden" name="action" value="login">
-            <div class="input-group">
-                <label for="password">Security Password</label>
-                <input type="password" id="password" name="password" required placeholder="••••••••" autofocus>
-            </div>
-            <button type="submit" class="btn-submit">Unlock Dashboard</button>
-        </form>
-    </div>
-</body>
-</html>
-<?php
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard Login - Exportia Spices</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap"
+            rel="stylesheet">
+        <style>
+            :root {
+                --primary: #00450d;
+                --accent: #845e3c;
+                --bg: #fbfaf8;
+                --text: #2d241e;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'Inter', sans-serif;
+                background: linear-gradient(135deg, #002206 0%, #00450d 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+
+            .login-card {
+                background: white;
+                padding: 40px;
+                border-radius: 16px;
+                box-shadow: 0 10px 45px rgba(0, 0, 0, 0.25);
+                max-width: 420px;
+                width: 100%;
+                text-align: center;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .logo-img {
+                max-height: 80px;
+                margin-bottom: 25px;
+            }
+
+            h2 {
+                font-family: 'Montserrat', sans-serif;
+                color: var(--primary);
+                font-size: 1.6rem;
+                margin-bottom: 10px;
+                font-weight: 700;
+            }
+
+            p {
+                color: #6e645e;
+                font-size: 0.95rem;
+                margin-bottom: 30px;
+            }
+
+            .error-msg {
+                background-color: #ffebee;
+                color: #c62828;
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                font-size: 0.85rem;
+                text-align: left;
+                border: 1px solid #ffcdd2;
+            }
+
+            .input-group {
+                margin-bottom: 20px;
+                text-align: left;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: #2d241e;
+            }
+
+            input[type="password"] {
+                width: 100%;
+                padding: 12px 16px;
+                border: 1px solid #eae5dc;
+                border-radius: 8px;
+                font-size: 1rem;
+                background-color: #FAF9F6;
+                outline: none;
+                transition: all 0.2s ease;
+            }
+
+            input[type="password"]:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(0, 69, 13, 0.15);
+                background-color: white;
+            }
+
+            .btn-submit {
+                width: 100%;
+                background-color: var(--primary);
+                color: white;
+                padding: 14px;
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 12px rgba(0, 69, 13, 0.2);
+                margin-top: 10px;
+            }
+
+            .btn-submit:hover {
+                background-color: #003309;
+                transform: translateY(-1px);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="login-card">
+            <img src="https://vintageglobaltrading.com/images/headlogo_trimmed.png" class="logo-img" alt="Exportia Spices">
+            <h2>Dashboard Access</h2>
+            <p>Enter your management security password</p>
+
+            <?php if (!empty($loginError)): ?>
+                <div class="error-msg"><?php echo htmlspecialchars($loginError); ?></div>
+            <?php endif; ?>
+
+            <form method="POST" action="admin.php">
+                <input type="hidden" name="action" value="login">
+                <div class="input-group">
+                    <label for="password">Security Password</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••" autofocus>
+                </div>
+                <button type="submit" class="btn-submit">Unlock Dashboard</button>
+            </form>
+        </div>
+    </body>
+
+    </html>
+    <?php
     exit();
 }
 
@@ -172,11 +194,14 @@ if (!$loggedIn) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exportia Spices - Admin Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary: #00450d;
@@ -193,8 +218,13 @@ if (!$loggedIn) {
             --sidebar-width: 260px;
             --shadow: 0 4px 20px rgba(132, 94, 60, 0.05);
         }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
@@ -203,7 +233,11 @@ if (!$loggedIn) {
             display: flex;
         }
 
-        h1, h2, h3, h4, .font-headline {
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-headline {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
         }
@@ -263,7 +297,8 @@ if (!$loggedIn) {
             transition: all 0.2s ease;
         }
 
-        .nav-item:hover, .nav-item.active {
+        .nav-item:hover,
+        .nav-item.active {
             background-color: var(--primary-light);
             color: var(--primary);
         }
@@ -318,8 +353,15 @@ if (!$loggedIn) {
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Stats Cards */
@@ -417,10 +459,25 @@ if (!$loggedIn) {
             text-transform: uppercase;
         }
 
-        .badge-success { background-color: #e8f5e9; color: var(--success); }
-        .badge-pending { background-color: #fff8e1; color: var(--warning); }
-        .badge-danger { background-color: #ffebee; color: var(--danger); }
-        .badge-info { background-color: #e3f2fd; color: #1565c0; }
+        .badge-success {
+            background-color: #e8f5e9;
+            color: var(--success);
+        }
+
+        .badge-pending {
+            background-color: #fff8e1;
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background-color: #ffebee;
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
 
         /* Buttons & Forms */
         .btn {
@@ -488,7 +545,7 @@ if (!$loggedIn) {
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 200;
             align-items: center;
             justify-content: center;
@@ -505,7 +562,7 @@ if (!$loggedIn) {
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             border: 1px solid var(--card-border);
         }
 
@@ -647,7 +704,7 @@ if (!$loggedIn) {
             color: white;
             padding: 14px 24px;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             z-index: 300;
             display: flex;
             align-items: center;
@@ -663,13 +720,13 @@ if (!$loggedIn) {
         }
     </style>
 </head>
+
 <body>
 
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-brand">
             <img src="https://vintageglobaltrading.com/images/headlogo_trimmed.png" alt="Exportia">
-            <h3>Exportia Spices</h3>
         </div>
         <ul class="sidebar-nav">
             <li><a class="nav-item active" data-tab="dashboard">Dashboard</a></li>
@@ -680,7 +737,12 @@ if (!$loggedIn) {
         </ul>
         <div class="sidebar-footer">
             <a href="admin.php?action=logout" class="btn-logout">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
                 Sign Out
             </a>
         </div>
@@ -688,24 +750,26 @@ if (!$loggedIn) {
 
     <!-- Main Content -->
     <div class="main-content">
-        
+
         <!-- DASHBOARD TAB -->
         <div id="dashboard" class="tab-content active">
             <div class="header-section">
                 <h1>Dashboard Summary</h1>
             </div>
-            
+
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-title">Total Sales</div>
+                    <div class="stat-title">Revenue (Paid Orders)</div>
                     <div class="stat-val" id="stat-sales">₹0.00</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;" id="stat-paid-count"></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">Order Volume</div>
+                    <div class="stat-title">Total Orders</div>
                     <div class="stat-val" id="stat-order-count">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;" id="stat-order-breakdown"></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-title">Average Order Value</div>
+                    <div class="stat-title">Avg. Paid Order Value</div>
                     <div class="stat-val" id="stat-aov">₹0.00</div>
                 </div>
                 <div class="stat-card">
@@ -733,7 +797,9 @@ if (!$loggedIn) {
                             </tr>
                         </thead>
                         <tbody id="recent-orders-tbody">
-                            <tr><td colspan="7" style="text-align:center;">Retrieving live database...</td></tr>
+                            <tr>
+                                <td colspan="7" style="text-align:center;">Retrieving live database...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -814,11 +880,13 @@ if (!$loggedIn) {
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                             <div class="form-group">
                                 <label for="setting-razorpay_key_id">Razorpay Key ID</label>
-                                <input type="text" id="setting-razorpay_key_id" class="form-control" name="razorpay_key_id">
+                                <input type="text" id="setting-razorpay_key_id" class="form-control"
+                                    name="razorpay_key_id">
                             </div>
                             <div class="form-group">
                                 <label for="setting-razorpay_key_secret">Razorpay Key Secret</label>
-                                <input type="text" id="setting-razorpay_key_secret" class="form-control" name="razorpay_key_secret">
+                                <input type="text" id="setting-razorpay_key_secret" class="form-control"
+                                    name="razorpay_key_secret">
                             </div>
                         </div>
 
@@ -836,12 +904,15 @@ if (!$loggedIn) {
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                             <div class="form-group">
                                 <label for="setting-payu_merchant_id">PayU Merchant ID</label>
-                                <input type="text" id="setting-payu_merchant_id" class="form-control" name="payu_merchant_id">
+                                <input type="text" id="setting-payu_merchant_id" class="form-control"
+                                    name="payu_merchant_id">
                             </div>
                             <div class="form-group">
                                 <label for="setting-payu_base_url">PayU Base URL</label>
                                 <input type="text" id="setting-payu_base_url" class="form-control" name="payu_base_url">
-                                <span style="font-size:0.75rem; color: var(--text-muted);">Use <code>https://test.payu.in</code> for sandbox, <code>https://api.payu.in</code> for live.</span>
+                                <span style="font-size:0.75rem; color: var(--text-muted);">Use
+                                    <code>https://test.payu.in</code> for sandbox, <code>https://api.payu.in</code> for
+                                    live.</span>
                             </div>
                         </div>
 
@@ -853,7 +924,8 @@ if (!$loggedIn) {
                             </div>
                             <div class="form-group">
                                 <label for="setting-paytm_merchant_key">Paytm Merchant Key</label>
-                                <input type="text" id="setting-paytm_merchant_key" class="form-control" name="paytm_merchant_key">
+                                <input type="text" id="setting-paytm_merchant_key" class="form-control"
+                                    name="paytm_merchant_key">
                             </div>
                         </div>
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -863,18 +935,23 @@ if (!$loggedIn) {
                             </div>
                             <div class="form-group">
                                 <label for="setting-paytm_industry_type">Paytm Industry Type</label>
-                                <input type="text" id="setting-paytm_industry_type" class="form-control" name="paytm_industry_type">
+                                <input type="text" id="setting-paytm_industry_type" class="form-control"
+                                    name="paytm_industry_type">
                             </div>
                         </div>
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                             <div class="form-group">
                                 <label for="setting-paytm_channel_id">Paytm Channel ID</label>
-                                <input type="text" id="setting-paytm_channel_id" class="form-control" name="paytm_channel_id">
+                                <input type="text" id="setting-paytm_channel_id" class="form-control"
+                                    name="paytm_channel_id">
                             </div>
                             <div class="form-group">
                                 <label for="setting-paytm_base_url">Paytm Base URL</label>
-                                <input type="text" id="setting-paytm_base_url" class="form-control" name="paytm_base_url">
-                                <span style="font-size:0.75rem; color: var(--text-muted);">Use <code>https://securestage.paytmpayments.com</code> for sandbox, <code>https://securegw.paytm.in</code> for live.</span>
+                                <input type="text" id="setting-paytm_base_url" class="form-control"
+                                    name="paytm_base_url">
+                                <span style="font-size:0.75rem; color: var(--text-muted);">Use
+                                    <code>https://securestage.paytmpayments.com</code> for sandbox,
+                                    <code>https://securegw.paytm.in</code> for live.</span>
                             </div>
                         </div>
 
@@ -886,7 +963,8 @@ if (!$loggedIn) {
                             </div>
                             <div class="form-group">
                                 <label for="setting-new_order_email">Notifications Alert Email</label>
-                                <input type="email" id="setting-new_order_email" class="form-control" name="new_order_email">
+                                <input type="email" id="setting-new_order_email" class="form-control"
+                                    name="new_order_email">
                             </div>
                         </div>
                         <div class="form-group">
@@ -907,11 +985,12 @@ if (!$loggedIn) {
             <div class="header-section">
                 <h1>Media &amp; Product Images</h1>
                 <form id="media-upload-form" style="display:flex; gap:10px;">
-                    <input type="file" id="media-file-input" class="form-control" style="background:white; max-width:250px;" required accept="image/*">
+                    <input type="file" id="media-file-input" class="form-control"
+                        style="background:white; max-width:250px;" required accept="image/*">
                     <button type="submit" class="btn btn-primary">Upload File</button>
                 </form>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3>Uploaded Media Catalog</h3>
@@ -942,7 +1021,8 @@ if (!$loggedIn) {
                         </div>
                         <div class="form-group">
                             <label for="prod-slug">Slug (URL Name) *</label>
-                            <input type="text" id="prod-slug" class="form-control" name="slug" placeholder="premium-turmeric">
+                            <input type="text" id="prod-slug" class="form-control" name="slug"
+                                placeholder="premium-turmeric">
                         </div>
                     </div>
                     <div class="form-group">
@@ -952,11 +1032,13 @@ if (!$loggedIn) {
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div class="form-group">
                             <label for="prod-price">Price in INR (per kg) *</label>
-                            <input type="number" step="0.01" id="prod-price" class="form-control" name="price_in_inr" required>
+                            <input type="number" step="0.01" id="prod-price" class="form-control" name="price_in_inr"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="prod-stock">Initial Stock Quantity *</label>
-                            <input type="number" id="prod-stock" class="form-control" name="stock_qty" value="50" required>
+                            <input type="number" id="prod-stock" class="form-control" name="stock_qty" value="50"
+                                required>
                         </div>
                     </div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -971,11 +1053,13 @@ if (!$loggedIn) {
                     </div>
                     <div class="form-group">
                         <label for="prod-image-url">Image Web Path (or select file below)</label>
-                        <input type="text" id="prod-image-url" class="form-control" name="image_url" placeholder="/images/turmeric.png">
+                        <input type="text" id="prod-image-url" class="form-control" name="image_url"
+                            placeholder="/images/turmeric.png">
                     </div>
                     <div class="form-group">
                         <label for="prod-file">Upload Image File (replaces web path if provided)</label>
-                        <input type="file" id="prod-file" class="form-control" name="image" accept="image/*" style="background: white;">
+                        <input type="file" id="prod-file" class="form-control" name="image" accept="image/*"
+                            style="background: white;">
                     </div>
                     <div class="form-group">
                         <label for="prod-isactive">Active Status</label>
@@ -1023,11 +1107,11 @@ if (!$loggedIn) {
 
         // Sidebar Navigation Controller
         document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
+            item.addEventListener('click', function (e) {
                 e.preventDefault();
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
-                
+
                 const targetTab = this.getAttribute('data-tab');
                 switchTab(targetTab);
             });
@@ -1036,10 +1120,10 @@ if (!$loggedIn) {
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            
+
             // Highlight nav item if switched programmatically
             document.querySelectorAll('.nav-item').forEach(el => {
-                if(el.getAttribute('data-tab') === tabId) {
+                if (el.getAttribute('data-tab') === tabId) {
                     el.classList.add('active');
                 } else {
                     el.classList.remove('active');
@@ -1059,13 +1143,13 @@ if (!$loggedIn) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toast-message');
             toastMsg.innerText = message;
-            
+
             if (type === 'error') {
                 toast.style.backgroundColor = '#c62828';
             } else {
                 toast.style.backgroundColor = '#2e7d32';
             }
-            
+
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
@@ -1090,21 +1174,29 @@ if (!$loggedIn) {
         function calculateDashboardStats() {
             let totalSales = 0;
             let paidOrders = 0;
-            
+            let pendingOrders = 0;
+            let failedOrders = 0;
+
             orders.forEach(order => {
                 if (order.payment_status === 'completed' || order.payment_status === 'success') {
                     totalSales += parseFloat(order.total);
                     paidOrders++;
+                } else if (order.payment_status === 'pending') {
+                    pendingOrders++;
+                } else {
+                    failedOrders++;
                 }
             });
-            
+
             const totalOrders = orders.length;
             const aov = paidOrders > 0 ? (totalSales / paidOrders) : 0;
-            
-            document.getElementById('stat-sales').innerText = '₹' + totalSales.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+            document.getElementById('stat-sales').innerText = '₹' + totalSales.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('stat-paid-count').innerText = paidOrders + ' paid out of ' + totalOrders + ' total';
             document.getElementById('stat-order-count').innerText = totalOrders;
-            document.getElementById('stat-aov').innerText = '₹' + aov.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            
+            document.getElementById('stat-order-breakdown').innerText = paidOrders + ' paid · ' + pendingOrders + ' pending · ' + failedOrders + ' failed';
+            document.getElementById('stat-aov').innerText = '₹' + aov.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
             // Count low stock items from products
             fetch('api_products.php')
                 .then(res => res.json())
@@ -1118,7 +1210,7 @@ if (!$loggedIn) {
         function renderRecentOrders() {
             const tbody = document.getElementById('recent-orders-tbody');
             tbody.innerHTML = '';
-            
+
             const recent = orders.slice(0, 5);
             if (recent.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No transactions found in system.</td></tr>';
@@ -1126,10 +1218,10 @@ if (!$loggedIn) {
             }
 
             recent.forEach(order => {
-                const date = new Date(order.created_at).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+                const date = new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
                 const payStatusBadge = order.payment_status === 'completed' ? 'success' : (order.payment_status === 'pending' ? 'pending' : 'danger');
                 const orderStatusBadge = order.order_status === 'delivered' ? 'success' : (order.order_status === 'cancelled' ? 'danger' : 'info');
-                
+
                 tbody.innerHTML += `
                     <tr>
                         <td style="font-weight:600;">${order.order_id}</td>
@@ -1158,7 +1250,7 @@ if (!$loggedIn) {
         function renderCatalog() {
             const tbody = document.getElementById('catalog-tbody');
             tbody.innerHTML = '';
-            
+
             if (products.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No products in catalog. Click Add Spice to create one!</td></tr>';
                 return;
@@ -1168,7 +1260,7 @@ if (!$loggedIn) {
                 const activeBadge = parseInt(p.is_active) === 1 ? 'success' : 'danger';
                 const activeLabel = parseInt(p.is_active) === 1 ? 'Active' : 'Inactive';
                 const imageSrc = p.image.startsWith('http') ? p.image : p.image;
-                
+
                 tbody.innerHTML += `
                     <tr id="prod-row-${p.id}">
                         <td>
@@ -1207,7 +1299,7 @@ if (!$loggedIn) {
         function updateProductStock(id, newStock) {
             const prod = products.find(p => p.id == id);
             if (!prod) return;
-            
+
             fetch('api_products.php?action=update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1216,22 +1308,22 @@ if (!$loggedIn) {
                     stock_qty: parseInt(newStock)
                 })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showToast(`Stock updated for ${prod.name}`);
-                } else {
-                    showToast(data.error || "Failed to update stock", "error");
-                }
-            })
-            .catch(err => showToast("Error updating stock", "error"));
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(`Stock updated for ${prod.name}`);
+                    } else {
+                        showToast(data.error || "Failed to update stock", "error");
+                    }
+                })
+                .catch(err => showToast("Error updating stock", "error"));
         }
 
         // Toggle active status
         function toggleProductActive(id, currentStatus) {
             const prod = products.find(p => p.id == id);
             if (!prod) return;
-            
+
             const nextStatus = currentStatus === 1 ? 0 : 1;
             fetch('api_products.php?action=update', {
                 method: 'POST',
@@ -1241,39 +1333,39 @@ if (!$loggedIn) {
                     is_active: nextStatus
                 })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showToast(`Toggled storefront status for ${prod.name}`);
-                    loadCatalogData();
-                } else {
-                    showToast(data.error || "Failed to update status", "error");
-                }
-            })
-            .catch(err => showToast("Error updating status", "error"));
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(`Toggled storefront status for ${prod.name}`);
+                        loadCatalogData();
+                    } else {
+                        showToast(data.error || "Failed to update status", "error");
+                    }
+                })
+                .catch(err => showToast("Error updating status", "error"));
         }
 
         // Delete Product
         function deleteProduct(id) {
             const prod = products.find(p => p.id == id);
             if (!prod) return;
-            
+
             if (confirm(`Are you sure you want to completely delete "${prod.name}"? This action cannot be undone.`)) {
                 fetch('api_products.php?action=delete', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: id })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast(`Successfully deleted ${prod.name}`);
-                        loadCatalogData();
-                    } else {
-                        showToast(data.error || "Failed to delete product", "error");
-                    }
-                })
-                .catch(err => showToast("Error deleting product", "error"));
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast(`Successfully deleted ${prod.name}`);
+                            loadCatalogData();
+                        } else {
+                            showToast(data.error || "Failed to delete product", "error");
+                        }
+                    })
+                    .catch(err => showToast("Error deleting product", "error"));
             }
         }
 
@@ -1283,10 +1375,10 @@ if (!$loggedIn) {
             const title = document.getElementById('product-modal-title');
             const form = document.getElementById('product-form');
             form.reset();
-            
+
             document.getElementById('product-action-input').value = action === 'add' ? 'add' : 'update';
             document.getElementById('product-id-input').value = id || '';
-            
+
             if (action === 'add') {
                 title.innerText = 'Add Spice Product';
                 document.getElementById('prod-stock').value = 50;
@@ -1314,31 +1406,31 @@ if (!$loggedIn) {
         }
 
         // Submit product form (Handles multipart for file upload)
-        document.getElementById('product-form').addEventListener('submit', function(e) {
+        document.getElementById('product-form').addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             const form = this;
             const formData = new FormData(form);
             const action = document.getElementById('product-action-input').value;
-            
+
             fetch(`api_products.php?action=${action}`, {
                 method: 'POST',
                 body: formData
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showToast(data.message || "Product saved successfully!");
-                    closeProductModal();
-                    loadCatalogData();
-                } else {
-                    showToast(data.error || "Failed to save product.", "error");
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                showToast("Server connection error during upload.", "error");
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message || "Product saved successfully!");
+                        closeProductModal();
+                        loadCatalogData();
+                    } else {
+                        showToast(data.error || "Failed to save product.", "error");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast("Server connection error during upload.", "error");
+                });
         });
 
         // --- ORDERS CONTROLLER ---
@@ -1355,16 +1447,16 @@ if (!$loggedIn) {
         function renderOrders() {
             const tbody = document.getElementById('orders-tbody');
             tbody.innerHTML = '';
-            
+
             if (orders.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No orders found in database.</td></tr>';
                 return;
             }
 
             orders.forEach(o => {
-                const date = new Date(o.created_at).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+                const date = new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                 const payStatusBadge = o.payment_status === 'completed' ? 'success' : (o.payment_status === 'pending' ? 'pending' : 'danger');
-                
+
                 tbody.innerHTML += `
                     <tr>
                         <td style="font-weight:600;">${o.order_id}</td>
@@ -1411,11 +1503,11 @@ if (!$loggedIn) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id, payment_status: newStatus })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) showToast("Payment status updated.");
-                else showToast(data.error || "Failed updating status", "error");
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) showToast("Payment status updated.");
+                    else showToast(data.error || "Failed updating status", "error");
+                });
         }
 
         function updateOrderStatus(id, newStatus) {
@@ -1424,20 +1516,20 @@ if (!$loggedIn) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id, order_status: newStatus })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) showToast("Order status updated.");
-                else showToast(data.error || "Failed updating status", "error");
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) showToast("Order status updated.");
+                    else showToast(data.error || "Failed updating status", "error");
+                });
         }
 
         function viewOrderDetails(id) {
             const o = orders.find(order => order.id == id);
             if (!o) return;
-            
+
             const date = new Date(o.created_at).toLocaleString('en-IN');
             const modalBody = document.getElementById('order-modal-body');
-            
+
             modalBody.innerHTML = `
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.9rem;">
                     <div>
@@ -1501,7 +1593,7 @@ if (!$loggedIn) {
                     <strong>Notes/Instructions:</strong> ${o.notes || 'None provided'}
                 </div>
             `;
-            
+
             document.getElementById('order-modal').classList.add('active');
         }
 
@@ -1524,32 +1616,32 @@ if (!$loggedIn) {
                 .catch(err => showToast("Error loading config settings", "error"));
         }
 
-        document.getElementById('settings-form').addEventListener('submit', function(e) {
+        document.getElementById('settings-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const inputs = this.querySelectorAll('input');
             const data = {};
-            
+
             inputs.forEach(input => {
                 if (input.name) {
                     data[input.name] = input.value;
                 }
             });
-            
+
             fetch('api_settings.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             })
-            .then(res => res.json())
-            .then(resData => {
-                if (resData.success) {
-                    showToast("System configurations saved successfully!");
-                    loadSettingsData();
-                } else {
-                    showToast("Failed to save configuration settings", "error");
-                }
-            })
-            .catch(err => showToast("Error saving configurations", "error"));
+                .then(res => res.json())
+                .then(resData => {
+                    if (resData.success) {
+                        showToast("System configurations saved successfully!");
+                        loadSettingsData();
+                    } else {
+                        showToast("Failed to save configuration settings", "error");
+                    }
+                })
+                .catch(err => showToast("Error saving configurations", "error"));
         });
 
         // --- MEDIA CONTROLLER ---
@@ -1565,7 +1657,7 @@ if (!$loggedIn) {
         function renderMedia(files) {
             const container = document.getElementById('media-container');
             container.innerHTML = '';
-            
+
             if (!files || files.length === 0) {
                 container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">No images found in upload catalog.</div>';
                 return;
@@ -1575,7 +1667,7 @@ if (!$loggedIn) {
                 // Check if it's image or other
                 const isImg = file.match(/\.(jpg|jpeg|png|gif|webp)$/i);
                 const webPath = '/uploads/' + file;
-                
+
                 container.innerHTML += `
                     <div class="media-item">
                         <div class="media-preview">
@@ -1614,37 +1706,38 @@ if (!$loggedIn) {
         }
 
         // Handle Media Direct Upload
-        document.getElementById('media-upload-form').addEventListener('submit', function(e) {
+        document.getElementById('media-upload-form').addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             const fileInput = document.getElementById('media-file-input');
             if (!fileInput.files || fileInput.files.length === 0) return;
-            
+
             const formData = new FormData();
             formData.append('image', fileInput.files[0]);
             formData.append('action', 'add');
             formData.append('name', fileInput.files[0].name);
-            
+
             // Upload through product API to reuse image upload logic
             fetch('api_products.php?action=add', {
                 method: 'POST',
                 body: formData
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showToast("File uploaded successfully.");
-                    fileInput.value = '';
-                    loadMediaData();
-                } else {
-                    showToast(data.error || "Failed to upload file.", "error");
-                }
-            })
-            .catch(err => showToast("Error uploading file", "error"));
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast("File uploaded successfully.");
+                        fileInput.value = '';
+                        loadMediaData();
+                    } else {
+                        showToast(data.error || "Failed to upload file.", "error");
+                    }
+                })
+                .catch(err => showToast("Error uploading file", "error"));
         });
 
         // Initialize view
         loadDashboardData();
     </script>
 </body>
+
 </html>
