@@ -15,7 +15,7 @@ export default function AboutPage() {
       <header className="relative pt-32 pb-24 md:pt-48 md:pb-36 bg-surface-container-low overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/spice_plantation.png"
+            src="/images/spice_plantation.webp"
             alt="Spice Plantation Sourcing"
             fill
             priority
@@ -72,7 +72,7 @@ export default function AboutPage() {
           {/* Sourcing Image Frame */}
           <div className="lg:col-span-5 relative h-[300px] lg:h-auto rounded-2xl overflow-hidden group border border-outline-variant/30">
             <Image
-              src="/images/cinnamon_sorting.png"
+              src="/images/cinnamon_sorting.webp"
               alt="Hands sorting high quality cinnamon quills"
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -136,7 +136,7 @@ export default function AboutPage() {
           <div className="relative flex justify-center">
             <div className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full border-[24px] md:border-[32px] border-surface-container overflow-hidden relative shadow-lg">
               <Image
-                src="/images/spice_farmer.png"
+                src="/images/spice_farmer.webp"
                 alt="Spice farmer smile in the field"
                 fill
                 className="object-cover"

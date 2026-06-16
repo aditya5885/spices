@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     siteName: "Vintage Global Ventures",
     images: [
       {
-        url: "https://vintageglobaltrading.com/images/hero_spices_banner.png",
+        url: "https://vintageglobaltrading.com/images/hero_spices_banner.webp",
         width: 1200,
         height: 630,
         alt: "Vintage Global Ventures Banner",

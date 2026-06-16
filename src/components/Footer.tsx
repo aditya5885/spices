@@ -53,7 +53,7 @@ export default function Footer() {
           <div className="md:col-span-4 space-y-6">
             <Link href="/" className="inline-block hover:opacity-90 transition-opacity">
               <Image
-                src="/images/headlogo_trimmed.png"
+                src="/images/headlogo_trimmed.webp"
                 alt="Vintage Global Ventures"
                 width={240}
                 height={60}

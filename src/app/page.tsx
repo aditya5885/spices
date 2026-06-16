@@ -70,7 +70,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/40 z-10"></div>
           <Image
-            src="/images/hero_spices_banner.png"
+            src="/images/hero_spices_banner.webp"
             alt="Premium Spices Banner"
             fill
             priority
@@ -281,7 +281,7 @@ export default function HomePage() {
           {/* Sourcing Image Frame */}
           <div className="relative bg-surface-container-low rounded-3xl p-4 border border-outline-variant/20 shadow-md flex items-center justify-center h-[380px] overflow-hidden group">
             <Image
-              src="/images/spice_plantation.png"
+              src="/images/spice_plantation.webp"
               alt="Indian Spice Plantation"
               fill
               className="object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"

@@ -62,7 +62,7 @@ export default function Header() {
             className="flex items-center hover:opacity-90 transition-opacity"
           >
             <Image
-              src="/images/headlogo_trimmed.png"
+              src="/images/headlogo_trimmed.webp"
               alt="Vintage Global Ventures"
               width={280}
               height={70}

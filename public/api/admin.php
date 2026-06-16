@@ -166,7 +166,7 @@ if (!$loggedIn) {
 
     <body>
         <div class="login-card">
-            <img src="https://vintageglobaltrading.com/images/headlogo_trimmed.png" class="logo-img" alt="Exportia Spices">
+            <img src="https://vintageglobaltrading.com/images/headlogo_trimmed.webp" class="logo-img" alt="Exportia Spices">
             <h2>Dashboard Access</h2>
             <p>Enter your management security password</p>
 
@@ -726,7 +726,7 @@ if (!$loggedIn) {
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-brand">
-            <img src="https://vintageglobaltrading.com/images/headlogo_trimmed.png" alt="Exportia">
+            <img src="https://vintageglobaltrading.com/images/headlogo_trimmed.webp" alt="Exportia">
         </div>
         <ul class="sidebar-nav">
             <li><a class="nav-item active" data-tab="dashboard">Dashboard</a></li>
@@ -1100,7 +1100,7 @@ if (!$loggedIn) {
                     <div class="form-group">
                         <label for="prod-image-url">Image Web Path (or select file below)</label>
                         <input type="text" id="prod-image-url" class="form-control" name="image_url"
-                            placeholder="/images/turmeric.png">
+                            placeholder="/images/turmeric.webp">
                     </div>
                     <div class="form-group">
                         <label for="prod-file">Upload Image File (replaces web path if provided)</label>

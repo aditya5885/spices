@@ -22,9 +22,9 @@ define('DB_USER', 'vintae75_spices_user');
 define('DB_PASS', 'SpicesPay2026!Aa9');
 define('DB_NAME', 'vintae75_spices_db');
 
-// Razorpay Credentials (test credentials, client modifies on cPanel)
-define('RAZORPAY_KEY_ID', 'rzp_test_lE1QvWvDylfC5P'); 
-define('RAZORPAY_KEY_SECRET', 'zVqF4h11s7YVp5uC7Y36Zf5E');
+// Razorpay Credentials (live credentials, client modifies on cPanel)
+define('RAZORPAY_KEY_ID', 'rzp_live_T2DJEm152JW7Zw'); 
+define('RAZORPAY_KEY_SECRET', '3BbEKhe8ZfrNU7foRUo0hAkc');
 
 // PayU Credentials (test credentials, client modifies on cPanel)
 define('PAYU_KEY', 'gmjiH9');
@@ -185,7 +185,7 @@ function sendOrderEmail($orderId) {
             <body>
                 <div class='card'>
                     <div class='header'>
-                        <img src='https://vintageglobaltrading.com/images/headlogo_trimmed.png' class='logo' alt='Exportia Spices'><br>
+                        <img src='https://vintageglobaltrading.com/images/headlogo_trimmed.webp' class='logo' alt='Exportia Spices'><br>
                         <div class='headline'>Thank You for Your Order!</div>
                         <p style='font-size:13px; color:#6e645e; margin: 5px 0 0 0;'>Your order has been successfully placed and is now being processed.</p>
                     </div>

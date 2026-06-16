@@ -50,7 +50,7 @@ export default function ContactPage() {
       <header className="relative pt-32 pb-20 bg-surface-container-low overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/hero_spices_banner.png"
+            src="/images/hero_spices_banner.webp"
             alt="Spices bags raw material background"
             fill
             priority

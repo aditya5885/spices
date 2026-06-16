@@ -21,7 +21,7 @@ function OrderFormContent() {
   const [productsList, setProductsList] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [razorpayKey, setRazorpayKey] = useState("rzp_test_dummykey123");
+  const [razorpayKey, setRazorpayKey] = useState("rzp_live_T2DJEm152JW7Zw");
   const [shippingStandard, setShippingStandard] = useState(0);
   const [shippingExpress, setShippingExpress] = useState(0);
   const [shippingThreshold, setShippingThreshold] = useState(1000);
@@ -30,7 +30,7 @@ function OrderFormContent() {
   const [quantity, setQuantity] = useState<number>(1); // Number of packs
   const [step, setStep] = useState<number>(1);
   const [shippingMethod, setShippingMethod] = useState<"standard" | "express">("standard");
-  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "paytm" | "payu" | "cod">("payu");
+  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "paytm" | "payu" | "cod">("razorpay");
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -241,7 +241,7 @@ function OrderFormContent() {
             currency: orderData.currency,
             name: "Vintage Global Ventures",
             description: `Order: ${quantity} x ${packSize} of ${selectedProduct.name}`,
-            image: "https://vintageglobaltrading.com/images/headlogo_trimmed.png",
+            image: "https://vintageglobaltrading.com/images/headlogo_trimmed.webp",
             order_id: orderData.id,
             handler: async function (response: any) {
               try {
@@ -796,7 +796,6 @@ function OrderFormContent() {
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
-                  {/* HIDE FOR NOW: Uncomment this block to enable Razorpay checkout button
                   <button
                     onClick={() => setPaymentMethod("razorpay")}
                     className={`p-5 rounded-xl border text-left flex flex-col justify-between h-[120px] transition-all ${
@@ -811,7 +810,6 @@ function OrderFormContent() {
                       <p className="text-[9px] text-on-surface-variant mt-1">Cards, Netbanking & UPI</p>
                     </div>
                   </button>
-                  */}
 
                   {/* HIDE FOR NOW: Uncomment this block to enable Paytm UPI checkout button
                   <button

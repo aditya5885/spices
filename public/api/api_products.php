@@ -12,6 +12,24 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 $conn = getDB();
 $conn->select_db(DB_NAME);
 
+// Self-healing database schema check for products table columns
+try {
+    $checkStock = $conn->query("SHOW COLUMNS FROM products LIKE 'stock_qty'");
+    if ($checkStock && $checkStock->num_rows === 0) {
+        $conn->query("ALTER TABLE products ADD stock_qty INT DEFAULT 50 AFTER specs");
+    }
+    $checkActive = $conn->query("SHOW COLUMNS FROM products LIKE 'is_active'");
+    if ($checkActive && $checkActive->num_rows === 0) {
+        $conn->query("ALTER TABLE products ADD is_active TINYINT(1) DEFAULT 1 AFTER stock_qty");
+    }
+    $checkFixed = $conn->query("SHOW COLUMNS FROM products LIKE 'is_fixed_price'");
+    if ($checkFixed && $checkFixed->num_rows === 0) {
+        $conn->query("ALTER TABLE products ADD is_fixed_price TINYINT(1) DEFAULT 0 AFTER is_active");
+    }
+} catch (Exception $e) {
+    // Fail silently, query preparation below will output standard schema errors
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Parse incoming request data
@@ -140,7 +158,7 @@ if ($method === 'GET') {
         
         // Fetch current product to check fields
         $curr = $conn->query("SELECT * FROM products WHERE id = $id");
-        if ($curr->num_rows === 0) {
+        if (!$curr || $curr->num_rows === 0) {
             http_response_code(404);
             echo json_encode(["error" => "Product not found"]);
             exit();
