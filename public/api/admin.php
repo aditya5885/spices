@@ -732,6 +732,7 @@ if (!$loggedIn) {
             <li><a class="nav-item active" data-tab="dashboard">Dashboard</a></li>
             <li><a class="nav-item" data-tab="catalog">Catalog</a></li>
             <li><a class="nav-item" data-tab="orders">Orders</a></li>
+            <li><a class="nav-item" data-tab="repeat_orders">Standing Orders</a></li>
             <li><a class="nav-item" data-tab="settings">Settings</a></li>
             <li><a class="nav-item" data-tab="media">Media &amp; Files</a></li>
         </ul>
@@ -857,6 +858,35 @@ if (!$loggedIn) {
                             </tr>
                         </thead>
                         <tbody id="orders-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- STANDING ORDERS TAB -->
+        <div id="repeat_orders" class="tab-content">
+            <div class="header-section">
+                <h1>Standing Orders (Subscriptions)</h1>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer Name</th>
+                                <th>Contact details</th>
+                                <th>Spice &amp; Size</th>
+                                <th>Frequency</th>
+                                <th>Next Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="repeat-orders-tbody">
                             <!-- Populated dynamically -->
                         </tbody>
                     </table>
@@ -1068,6 +1098,13 @@ if (!$loggedIn) {
                             <option value="0">Inactive (Hidden)</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="prod-isfixedprice">Pricing Mode</label>
+                        <select id="prod-isfixedprice" class="form-control" name="is_fixed_price">
+                            <option value="0">Calculated per kg (standard spices)</option>
+                            <option value="1">Fixed Price flat packet (e.g. ₹20 Salt Packet)</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline" onclick="closeProductModal()">Cancel</button>
@@ -1104,6 +1141,7 @@ if (!$loggedIn) {
         let products = [];
         let orders = [];
         let settings = {};
+        let repeatOrders = [];
 
         // Sidebar Navigation Controller
         document.querySelectorAll('.nav-item').forEach(item => {
@@ -1134,6 +1172,7 @@ if (!$loggedIn) {
             if (tabId === 'dashboard') loadDashboardData();
             if (tabId === 'catalog') loadCatalogData();
             if (tabId === 'orders') loadOrdersData();
+            if (tabId === 'repeat_orders') loadRepeatOrdersData();
             if (tabId === 'settings') loadSettingsData();
             if (tabId === 'media') loadMediaData();
         }
@@ -1273,7 +1312,10 @@ if (!$loggedIn) {
                             </div>
                         </td>
                         <td><code>${p.slug}</code></td>
-                        <td>₹${parseFloat(p.price_in_inr).toFixed(2)}</td>
+                        <td>
+                            ₹${parseFloat(p.price_in_inr).toFixed(2)}
+                            ${parseInt(p.is_fixed_price) === 1 ? '<span style="font-size:0.7rem; color:var(--accent); font-weight:600; display:block;">(Fixed Price)</span>' : ''}
+                        </td>
                         <td>
                             <input type="number" value="${p.stock_qty}" 
                                    style="width:70px; padding:6px; border:1px solid var(--card-border); border-radius:4px;" 
@@ -1383,6 +1425,7 @@ if (!$loggedIn) {
                 title.innerText = 'Add Spice Product';
                 document.getElementById('prod-stock').value = 50;
                 document.getElementById('prod-isactive').value = "1";
+                document.getElementById('prod-isfixedprice').value = "0";
             } else {
                 title.innerText = 'Edit Spice Product';
                 const p = products.find(prod => prod.id == id);
@@ -1396,6 +1439,7 @@ if (!$loggedIn) {
                     document.getElementById('prod-specs').value = p.specs || '';
                     document.getElementById('prod-image-url').value = p.image;
                     document.getElementById('prod-isactive').value = p.is_active;
+                    document.getElementById('prod-isfixedprice').value = p.is_fixed_price || "0";
                 }
             }
             modal.classList.add('active');
@@ -1599,6 +1643,105 @@ if (!$loggedIn) {
 
         function closeOrderModal() {
             document.getElementById('order-modal').classList.remove('active');
+        }
+
+        // --- STANDING ORDERS (REPEAT PURCHASES) CONTROLLER ---
+        function loadRepeatOrdersData() {
+            fetch('/api/api_repeat_orders.php')
+                .then(res => res.json())
+                .then(data => {
+                    repeatOrders = data;
+                    renderRepeatOrders();
+                })
+                .catch(err => showToast("Error loading standing orders.", "error"));
+        }
+
+        function renderRepeatOrders() {
+            const tbody = document.getElementById('repeat-orders-tbody');
+            tbody.innerHTML = '';
+
+            if (repeatOrders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No standing orders recorded.</td></tr>';
+                return;
+            }
+
+            repeatOrders.forEach(o => {
+                const date = new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                const nextDue = o.next_due_date ? new Date(o.next_due_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
+
+                // Generate pre-filled order link
+                const siteUrl = window.location.origin;
+                const orderLink = `${siteUrl}/order?product=${o.product_slug}&size=${o.pack_size}&qty=${o.quantity}&name=${encodeURIComponent(o.customer_name)}&email=${encodeURIComponent(o.email)}&phone=${encodeURIComponent(o.phone)}&address=${encodeURIComponent(o.shipping_address)}&city=${encodeURIComponent(o.city)}&state=${encodeURIComponent(o.state)}&zip=${encodeURIComponent(o.pin_code)}`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:600;">#SO-${o.id}</td>
+                        <td style="font-weight:600; color:var(--primary);">${o.customer_name}</td>
+                        <td>
+                            <div>${o.email}</div>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">${o.phone}</span>
+                        </td>
+                        <td>
+                            <div>${o.product_slug}</div>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">${o.pack_size} x ${o.quantity}</span>
+                        </td>
+                        <td style="text-transform: capitalize; font-weight:600;">${o.frequency}</td>
+                        <td style="font-weight:600; color:var(--accent);">${nextDue}</td>
+                        <td>
+                            <select class="form-control" style="width:110px; padding:4px 8px; font-size:0.8rem; border-radius:4px;" 
+                                    onchange="updateRepeatOrderStatus(${o.id}, this.value)">
+                                <option value="active" ${o.status === 'active' ? 'selected' : ''}>Active</option>
+                                <option value="paused" ${o.status === 'paused' ? 'selected' : ''}>Paused</option>
+                                <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-outline btn-sm" onclick="copyToClipboard('${orderLink}', 'Checkout link copied!')">Copy Link</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteRepeatOrder(${o.id})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function copyToClipboard(text, successMsg) {
+            navigator.clipboard.writeText(text)
+                .then(() => showToast(successMsg))
+                .catch(() => showToast("Failed to copy link", "error"));
+        }
+
+        function updateRepeatOrderStatus(id, newStatus) {
+            fetch('/api/api_repeat_orders.php?action=update_status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, status: newStatus })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) showToast("Standing order status updated.");
+                    else showToast(data.error || "Failed updating standing order", "error");
+                });
+        }
+
+        function deleteRepeatOrder(id) {
+            if (confirm("Are you sure you want to delete this standing order?")) {
+                fetch('/api/api_repeat_orders.php?action=delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast("Standing order deleted.");
+                            loadRepeatOrdersData();
+                        } else {
+                            showToast(data.error || "Failed to delete standing order", "error");
+                        }
+                    });
+            }
         }
 
         // --- SETTINGS CONTROLLER ---

@@ -45,6 +45,7 @@ $createProductsTable = "CREATE TABLE IF NOT EXISTS products (
     specs VARCHAR(255) NULL,
     stock_qty INT DEFAULT 50,
     is_active TINYINT(1) DEFAULT 1,
+    is_fixed_price TINYINT(1) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
@@ -55,6 +56,7 @@ if (!$conn->query($createProductsTable)) {
 // Add columns to products table if they don't exist
 addColumnIfNotExists($conn, 'products', 'stock_qty', 'INT DEFAULT 50 AFTER specs');
 addColumnIfNotExists($conn, 'products', 'is_active', 'TINYINT(1) DEFAULT 1 AFTER stock_qty');
+addColumnIfNotExists($conn, 'products', 'is_fixed_price', 'TINYINT(1) DEFAULT 0 AFTER is_active');
 
 // 3. Create Orders Table
 $createOrdersTable = "CREATE TABLE IF NOT EXISTS orders (
@@ -100,6 +102,29 @@ addColumnIfNotExists($conn, 'orders', 'payu_mode', "VARCHAR(50) NULL AFTER payu_
 addColumnIfNotExists($conn, 'orders', 'paytm_txnid', "VARCHAR(100) NULL AFTER payu_mode");
 addColumnIfNotExists($conn, 'orders', 'paytm_status', "VARCHAR(50) NULL AFTER paytm_txnid");
 addColumnIfNotExists($conn, 'orders', 'paytm_mode', "VARCHAR(50) NULL AFTER paytm_status");
+
+// 3.5 Create Repeat Orders Table (for Subscription / Standing Orders)
+$createRepeatOrdersTable = "CREATE TABLE IF NOT EXISTS repeat_orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    product_slug VARCHAR(100) NOT NULL,
+    pack_size VARCHAR(50) NOT NULL,
+    quantity INT NOT NULL,
+    frequency VARCHAR(50) NOT NULL,
+    shipping_address TEXT NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    pin_code VARCHAR(20) NOT NULL,
+    status VARCHAR(50) DEFAULT 'active',
+    next_due_date DATE NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+if (!$conn->query($createRepeatOrdersTable)) {
+    die("Error creating repeat_orders table: " . $conn->error);
+}
 
 // 4. Create Settings Table
 $createSettingsTable = "CREATE TABLE IF NOT EXISTS settings (
@@ -209,21 +234,40 @@ $defaultProducts = [
         'specs' => 'Handpicked Cloves, High Oil Content',
         'stock_qty' => 70,
         'is_active' => 1
+    ],
+    [
+        'slug' => 'salt-packet',
+        'name' => 'Rock Salt Packet',
+        'description' => 'Premium, naturally mineral-rich rock salt packet. Perfect for testing and daily kitchen use.',
+        'price_in_inr' => 20.00,
+        'image' => '/images/salt.png',
+        'badge' => 'MINERAL RICH',
+        'specs' => 'Pure Rock Salt, 1 Packet',
+        'stock_qty' => 500,
+        'is_active' => 1,
+        'is_fixed_price' => 1
     ]
 ];
 
-$stmtInsert = $conn->prepare("INSERT INTO products (slug, name, description, price_in_inr, image, badge, specs, stock_qty, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmtUpdate = $conn->prepare("UPDATE products SET image = ?, stock_qty = ?, is_active = ? WHERE slug = ?");
+$stmtInsert = $conn->prepare("INSERT INTO products (slug, name, description, price_in_inr, image, badge, specs, stock_qty, is_active, is_fixed_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmtUpdate = $conn->prepare("UPDATE products SET image = ?, stock_qty = ?, is_active = ?, is_fixed_price = ? WHERE slug = ?");
 
 foreach ($defaultProducts as $p) {
+    $is_fixed = isset($p['is_fixed_price']) ? $p['is_fixed_price'] : 0;
     if ($rowCount['count'] == 0) {
-        $stmtInsert->bind_param("sssdsssii", $p['slug'], $p['name'], $p['description'], $p['price_in_inr'], $p['image'], $p['badge'], $p['specs'], $p['stock_qty'], $p['is_active']);
+        $stmtInsert->bind_param("sssdsssiii", $p['slug'], $p['name'], $p['description'], $p['price_in_inr'], $p['image'], $p['badge'], $p['specs'], $p['stock_qty'], $p['is_active'], $is_fixed);
         $stmtInsert->execute();
         $seeded = true;
     } else {
-        // Update the image path, stock_qty, is_active for existing products matching default slugs
-        $stmtUpdate->bind_param("siis", $p['image'], $p['stock_qty'], $p['is_active'], $p['slug']);
+        // Update the image path, stock_qty, is_active, is_fixed_price for existing products matching default slugs
+        $stmtUpdate->bind_param("siiis", $p['image'], $p['stock_qty'], $p['is_active'], $is_fixed, $p['slug']);
         $stmtUpdate->execute();
+        // Since count is not 0, if salt-packet doesn't exist, we should check if it's missing and insert it
+        $checkExist = $conn->query("SELECT id FROM products WHERE slug = '" . $conn->real_escape_string($p['slug']) . "'");
+        if ($checkExist && $checkExist->num_rows == 0) {
+            $stmtInsert->bind_param("sssdsssiii", $p['slug'], $p['name'], $p['description'], $p['price_in_inr'], $p['image'], $p['badge'], $p['specs'], $p['stock_qty'], $p['is_active'], $is_fixed);
+            $stmtInsert->execute();
+        }
     }
 }
 

@@ -60,6 +60,17 @@ export const products: Product[] = [
     image: "/images/cloves.png",
     badge: "EXTRA BOLD",
     specs: "Handpicked Cloves, High Oil Content"
+  },
+  {
+    id: "salt-packet",
+    name: "Rock Salt Packet",
+    slug: "salt-packet",
+    description: "Premium, naturally mineral-rich rock salt packet. Perfect for testing and daily kitchen use.",
+    priceInINR: 20.00,
+    image: "/images/salt.png",
+    badge: "MINERAL RICH",
+    specs: "Pure Rock Salt, 1 Packet",
+    isFixedPrice: 1
   }
 ];
 

@@ -87,6 +87,7 @@ if ($method === 'GET') {
         $specs = isset($input['specs']) ? trim($input['specs']) : '';
         $stock = isset($input['stock_qty']) ? intval($input['stock_qty']) : 50;
         $isActive = isset($input['is_active']) ? intval($input['is_active']) : 1;
+        $isFixed = isset($input['is_fixed_price']) ? intval($input['is_fixed_price']) : 0;
         
         $imagePath = processUpload();
         if (!$imagePath) {
@@ -112,8 +113,8 @@ if ($method === 'GET') {
         }
         $check->close();
         
-        $stmt = $conn->prepare("INSERT INTO products (slug, name, description, price_in_inr, image, badge, specs, stock_qty, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssdsssii", $slug, $name, $description, $price, $imagePath, $badge, $specs, $stock, $isActive);
+        $stmt = $conn->prepare("INSERT INTO products (slug, name, description, price_in_inr, image, badge, specs, stock_qty, is_active, is_fixed_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssdsssiii", $slug, $name, $description, $price, $imagePath, $badge, $specs, $stock, $isActive, $isFixed);
         
         if ($stmt->execute()) {
             echo json_encode(["success" => true, "message" => "Product added successfully", "slug" => $slug]);
@@ -148,6 +149,7 @@ if ($method === 'GET') {
         $specs = isset($input['specs']) ? trim($input['specs']) : $currRow['specs'];
         $stock = isset($input['stock_qty']) ? intval($input['stock_qty']) : intval($currRow['stock_qty']);
         $isActive = isset($input['is_active']) ? intval($input['is_active']) : intval($currRow['is_active']);
+        $isFixed = isset($input['is_fixed_price']) ? intval($input['is_fixed_price']) : intval($currRow['is_fixed_price']);
         
         $imagePath = processUpload();
         if (!$imagePath) {
@@ -167,8 +169,8 @@ if ($method === 'GET') {
         }
         $check->close();
         
-        $stmt = $conn->prepare("UPDATE products SET slug = ?, name = ?, description = ?, price_in_inr = ?, image = ?, badge = ?, specs = ?, stock_qty = ?, is_active = ? WHERE id = ?");
-        $stmt->bind_param("sssdsssiii", $slug, $name, $description, $price, $imagePath, $badge, $specs, $stock, $isActive, $id);
+        $stmt = $conn->prepare("UPDATE products SET slug = ?, name = ?, description = ?, price_in_inr = ?, image = ?, badge = ?, specs = ?, stock_qty = ?, is_active = ?, is_fixed_price = ? WHERE id = ?");
+        $stmt->bind_param("sssdsssiiii", $slug, $name, $description, $price, $imagePath, $badge, $specs, $stock, $isActive, $isFixed, $id);
         
         if ($stmt->execute()) {
             echo json_encode(["success" => true, "message" => "Product updated successfully"]);

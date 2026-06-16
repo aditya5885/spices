@@ -9,6 +9,7 @@ export interface Product {
   specs?: string;
   stockQty?: number;
   isActive?: number;
+  isFixedPrice?: number;
 }
 
 export interface OrderFormInputs {

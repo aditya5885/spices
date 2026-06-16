@@ -20,7 +20,8 @@ if ($result && $result->num_rows > 0) {
             "badge" => $row['badge'],
             "specs" => $row['specs'],
             "stockQty" => intval($row['stock_qty']),
-            "isActive" => intval($row['is_active'])
+            "isActive" => intval($row['is_active']),
+            "isFixedPrice" => isset($row['is_fixed_price']) ? intval($row['is_fixed_price']) : 0
         ];
     }
 }

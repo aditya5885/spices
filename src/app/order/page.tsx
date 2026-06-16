@@ -23,7 +23,7 @@ function OrderFormContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [razorpayKey, setRazorpayKey] = useState("rzp_test_dummykey123");
   
-  const [packSize, setPackSize] = useState<"200kg" | "500kg" | "1000kg" | "2000kg">("500kg");
+  const [packSize, setPackSize] = useState<string>("500kg");
   const [quantity, setQuantity] = useState<number>(1); // Number of packs
   const [step, setStep] = useState<number>(1);
   const [shippingMethod, setShippingMethod] = useState<"standard" | "express">("standard");
@@ -43,6 +43,35 @@ function OrderFormContent() {
 
   // Fetch products and configurations
   useEffect(() => {
+    // Parse prefill parameters from searchParams
+    const nameParam = searchParams.get("name") || "";
+    const phoneParam = searchParams.get("phone") || "";
+    const emailParam = searchParams.get("email") || "";
+    const addressParam = searchParams.get("address") || "";
+    const cityParam = searchParams.get("city") || "";
+    const stateParam = searchParams.get("state") || "";
+    const zipParam = searchParams.get("zip") || "";
+    const qtyParam = searchParams.get("qty");
+    const sizeParam = searchParams.get("size");
+
+    if (qtyParam) {
+      setQuantity(Math.max(1, Number(qtyParam)));
+    }
+    if (sizeParam) {
+      setPackSize(sizeParam);
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      fullName: nameParam || prev.fullName,
+      phone: phoneParam || prev.phone,
+      email: emailParam || prev.email,
+      address: addressParam || prev.address,
+      city: cityParam || prev.city,
+      state: stateParam || prev.state,
+      postalCode: zipParam || prev.postalCode,
+    }));
+
     // Fetch Razorpay configuration dynamically with JSON validation
     fetch(getApiUrl("/api/get_config.php"))
       .then((res) => {
@@ -72,6 +101,11 @@ function OrderFormContent() {
           setProductsList(data);
           const prod = data.find((p) => p.slug === initialProductSlug) || data[0];
           setSelectedProduct(prod || null);
+          if (prod && prod.isFixedPrice === 1) {
+            setPackSize("1pkt");
+          } else if (sizeParam) {
+            setPackSize(sizeParam);
+          }
         } else {
           throw new Error("Invalid format");
         }
@@ -81,14 +115,24 @@ function OrderFormContent() {
         setProductsList(fallbackProducts);
         const prod = fallbackProducts.find((p) => p.slug === initialProductSlug) || fallbackProducts[0];
         setSelectedProduct(prod || null);
+        if (prod && prod.isFixedPrice === 1) {
+          setPackSize("1pkt");
+        } else if (sizeParam) {
+          setPackSize(sizeParam);
+        }
       })
       .finally(() => setIsLoading(false));
-  }, [initialProductSlug]);
+  }, [initialProductSlug, searchParams]);
 
   const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const prod = productsList.find((p) => p.slug === e.target.value);
     if (prod) {
       setSelectedProduct(prod);
+      if (prod.isFixedPrice === 1) {
+        setPackSize("1pkt");
+      } else {
+        setPackSize("500kg");
+      }
     }
   };
 
@@ -102,7 +146,10 @@ function OrderFormContent() {
   };
 
   // Calculations
-  const getPackPrice = (basePrice: number, size: "200kg" | "500kg" | "1000kg" | "2000kg") => {
+  const getPackPrice = (basePrice: number, size: string) => {
+    if (selectedProduct?.isFixedPrice === 1) {
+      return basePrice;
+    }
     switch (size) {
       case "200kg":
         return Math.round(basePrice * 200);
@@ -501,22 +548,28 @@ function OrderFormContent() {
                   <label className="block text-xs font-bold text-primary uppercase tracking-wider mb-2">
                     Pack Size
                   </label>
-                  <div className="flex gap-2">
-                    {(["200kg", "500kg", "1000kg", "2000kg"] as const).map((size) => (
-                      <button
-                        key={size}
-                        type="button"
-                        onClick={() => setPackSize(size)}
-                        className={`flex-1 py-3 text-xs font-bold rounded-lg border text-center transition-all ${
-                          packSize === size
-                            ? "bg-primary border-primary text-white"
-                            : "bg-white border-outline-variant/60 text-on-surface hover:bg-surface-container"
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
+                  {selectedProduct.isFixedPrice === 1 ? (
+                    <div className="py-3 px-4 text-xs font-bold bg-primary/10 border border-primary/20 text-primary rounded-lg text-center font-headline uppercase tracking-wider">
+                      1 Packet
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      {(["200kg", "500kg", "1000kg", "2000kg"] as const).map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => setPackSize(size)}
+                          className={`flex-1 py-3 text-xs font-bold rounded-lg border text-center transition-all ${
+                            packSize === size
+                              ? "bg-primary border-primary text-white"
+                              : "bg-white border-outline-variant/60 text-on-surface hover:bg-surface-container"
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -729,7 +782,22 @@ function OrderFormContent() {
                 <label className="block text-xs font-bold text-primary uppercase tracking-wider mb-3">
                   Choose Payment Method
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                  <button
+                    onClick={() => setPaymentMethod("razorpay")}
+                    className={`p-5 rounded-xl border text-left flex flex-col justify-between h-[120px] transition-all ${
+                      paymentMethod === "razorpay"
+                        ? "border-primary bg-primary/5 ring-1 ring-primary"
+                        : "border-outline-variant/40 hover:bg-background-cream"
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-primary text-2xl select-none">credit_card</span>
+                    <div>
+                      <h4 className="font-headline font-bold text-xs text-primary uppercase">Razorpay</h4>
+                      <p className="text-[9px] text-on-surface-variant mt-1">Cards, Netbanking & UPI</p>
+                    </div>
+                  </button>
 
                   <button
                     onClick={() => setPaymentMethod("paytm")}
