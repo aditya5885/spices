@@ -5,6 +5,9 @@ RewriteEngine On
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.html\ HTTP/
 RewriteRule ^index\.html$ / [R=301,L]
 
+# Route /admin to the PHP admin panel
+RewriteRule ^admin/?$ /api/admin.php [L,QSA]
+
 # Resolve subpages without trailing slash and without .html extension
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
