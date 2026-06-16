@@ -13,7 +13,7 @@ $conn->select_db(DB_NAME);
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION['admin_logged_in'] = false;
     session_destroy();
-    header("Location: admin.php");
+    header("Location: /admin");
     exit();
 }
 
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $storedPass = getSetting('admin_password');
     if ($passwordInput === $storedPass) {
         $_SESSION['admin_logged_in'] = true;
-        header("Location: admin.php");
+        header("Location: /admin");
         exit();
     } else {
         $loginError = "Incorrect dashboard security password. Please try again.";
@@ -174,7 +174,7 @@ if (!$loggedIn) {
                 <div class="error-msg"><?php echo htmlspecialchars($loginError); ?></div>
             <?php endif; ?>
 
-            <form method="POST" action="admin.php">
+            <form method="POST" action="/admin">
                 <input type="hidden" name="action" value="login">
                 <div class="input-group">
                     <label for="password">Security Password</label>
@@ -736,7 +736,7 @@ if (!$loggedIn) {
             <li><a class="nav-item" data-tab="media">Media &amp; Files</a></li>
         </ul>
         <div class="sidebar-footer">
-            <a href="admin.php?action=logout" class="btn-logout">
+            <a href="/admin?action=logout" class="btn-logout">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -838,7 +838,7 @@ if (!$loggedIn) {
         <div id="orders" class="tab-content">
             <div class="header-section">
                 <h1>Orders &amp; Shipments</h1>
-                <a href="api_orders.php?action=csv" class="btn btn-outline">Export to CSV</a>
+                <a href="/api/api_orders.php?action=csv" class="btn btn-outline">Export to CSV</a>
             </div>
 
             <div class="card">
@@ -1158,7 +1158,7 @@ if (!$loggedIn) {
 
         // --- DASHBOARD CONTROLLER ---
         function loadDashboardData() {
-            fetch('api_orders.php')
+            fetch('/api/api_orders.php')
                 .then(res => res.json())
                 .then(data => {
                     orders = data;
@@ -1198,7 +1198,7 @@ if (!$loggedIn) {
             document.getElementById('stat-aov').innerText = '₹' + aov.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
             // Count low stock items from products
-            fetch('api_products.php')
+            fetch('/api/api_products.php')
                 .then(res => res.json())
                 .then(data => {
                     products = data;
@@ -1238,7 +1238,7 @@ if (!$loggedIn) {
 
         // --- PRODUCT CATALOG CONTROLLER ---
         function loadCatalogData() {
-            fetch('api_products.php')
+            fetch('/api/api_products.php')
                 .then(res => res.json())
                 .then(data => {
                     products = data;
@@ -1300,7 +1300,7 @@ if (!$loggedIn) {
             const prod = products.find(p => p.id == id);
             if (!prod) return;
 
-            fetch('api_products.php?action=update', {
+            fetch('/api/api_products.php?action=update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1325,7 +1325,7 @@ if (!$loggedIn) {
             if (!prod) return;
 
             const nextStatus = currentStatus === 1 ? 0 : 1;
-            fetch('api_products.php?action=update', {
+            fetch('/api/api_products.php?action=update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1351,7 +1351,7 @@ if (!$loggedIn) {
             if (!prod) return;
 
             if (confirm(`Are you sure you want to completely delete "${prod.name}"? This action cannot be undone.`)) {
-                fetch('api_products.php?action=delete', {
+                fetch('/api/api_products.php?action=delete', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: id })
@@ -1413,7 +1413,7 @@ if (!$loggedIn) {
             const formData = new FormData(form);
             const action = document.getElementById('product-action-input').value;
 
-            fetch(`api_products.php?action=${action}`, {
+            fetch(`/api/api_products.php?action=${action}`, {
                 method: 'POST',
                 body: formData
             })
@@ -1435,7 +1435,7 @@ if (!$loggedIn) {
 
         // --- ORDERS CONTROLLER ---
         function loadOrdersData() {
-            fetch('api_orders.php')
+            fetch('/api/api_orders.php')
                 .then(res => res.json())
                 .then(data => {
                     orders = data;
@@ -1498,7 +1498,7 @@ if (!$loggedIn) {
         }
 
         function updateOrderPaymentStatus(id, newStatus) {
-            fetch('api_orders.php?action=update_status', {
+            fetch('/api/api_orders.php?action=update_status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id, payment_status: newStatus })
@@ -1511,7 +1511,7 @@ if (!$loggedIn) {
         }
 
         function updateOrderStatus(id, newStatus) {
-            fetch('api_orders.php?action=update_status', {
+            fetch('/api/api_orders.php?action=update_status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id, order_status: newStatus })
@@ -1603,7 +1603,7 @@ if (!$loggedIn) {
 
         // --- SETTINGS CONTROLLER ---
         function loadSettingsData() {
-            fetch('api_settings.php')
+            fetch('/api/api_settings.php')
                 .then(res => res.json())
                 .then(data => {
                     settings = data;
@@ -1627,7 +1627,7 @@ if (!$loggedIn) {
                 }
             });
 
-            fetch('api_settings.php', {
+            fetch('/api/api_settings.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -1646,7 +1646,7 @@ if (!$loggedIn) {
 
         // --- MEDIA CONTROLLER ---
         function loadMediaData() {
-            fetch('file_list.php')
+            fetch('/api/file_list.php')
                 .then(res => res.json())
                 .then(data => {
                     renderMedia(data);
@@ -1691,7 +1691,7 @@ if (!$loggedIn) {
 
         function deleteFile(file) {
             if (confirm(`Are you sure you want to delete file "${file}"?`)) {
-                fetch('file_list.php?action=delete&file=' + encodeURIComponent(file), { method: 'POST' })
+                fetch('/api/file_list.php?action=delete&file=' + encodeURIComponent(file), { method: 'POST' })
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
@@ -1718,7 +1718,7 @@ if (!$loggedIn) {
             formData.append('name', fileInput.files[0].name);
 
             // Upload through product API to reuse image upload logic
-            fetch('api_products.php?action=add', {
+            fetch('/api/api_products.php?action=add', {
                 method: 'POST',
                 body: formData
             })
