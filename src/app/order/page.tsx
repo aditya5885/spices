@@ -193,7 +193,7 @@ function OrderFormContent() {
   // Shipping calculation:
   const shippingINR =
     shippingMethod === "standard"
-      ? (subtotalINR >= shippingThreshold ? 0 : shippingStandard)
+      ? (shippingThreshold > 0 && subtotalINR >= shippingThreshold ? 0 : shippingStandard)
       : shippingExpress;
 
   // COD Fee: ₹50 if COD is chosen
@@ -734,7 +734,7 @@ function OrderFormContent() {
                         Standard Courier Delivery
                       </h4>
                       <p className="text-[11px] text-on-surface-variant font-medium mt-1 leading-relaxed">
-                        Estimated arrival: 3-5 business days. Flat ₹{shippingStandard} charge (Free for orders above ₹{shippingThreshold.toLocaleString("en-IN")}).
+                        Estimated arrival: 3-5 business days. Flat ₹{shippingStandard} charge{shippingThreshold > 0 ? ` (Free for orders above ₹${shippingThreshold.toLocaleString("en-IN")})` : ""}.
                       </p>
                     </div>
                   </button>
@@ -796,6 +796,7 @@ function OrderFormContent() {
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
+                  {/* HIDE FOR NOW: Uncomment this block to enable Razorpay checkout button
                   <button
                     onClick={() => setPaymentMethod("razorpay")}
                     className={`p-5 rounded-xl border text-left flex flex-col justify-between h-[120px] transition-all ${
@@ -810,7 +811,9 @@ function OrderFormContent() {
                       <p className="text-[9px] text-on-surface-variant mt-1">Cards, Netbanking & UPI</p>
                     </div>
                   </button>
+                  */}
 
+                  {/* HIDE FOR NOW: Uncomment this block to enable Paytm UPI checkout button
                   <button
                     onClick={() => setPaymentMethod("paytm")}
                     className={`p-5 rounded-xl border text-left flex flex-col justify-between h-[120px] transition-all ${
@@ -825,6 +828,7 @@ function OrderFormContent() {
                       <p className="text-[9px] text-on-surface-variant mt-1">UPI & Paytm Wallet settlement</p>
                     </div>
                   </button>
+                  */}
 
                   <button
                     onClick={() => setPaymentMethod("payu")}

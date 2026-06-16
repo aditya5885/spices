@@ -33,7 +33,7 @@ $conn = getDB();
 $conn->select_db(DB_NAME);
 
 // Verify stock first
-$stmtStock = $conn->prepare("SELECT price_in_inr, stock_qty FROM products WHERE slug = ?");
+$stmtStock = $conn->prepare("SELECT price_in_inr, stock_qty, is_fixed_price FROM products WHERE slug = ?");
 $stmtStock->bind_param("s", $udf1);
 $stmtStock->execute();
 $resStock = $stmtStock->get_result();
@@ -77,15 +77,20 @@ if (count($udf4Parts) >= 3) {
 }
 
 // Estimate subtotal and shipping
-$packMult = 1.0;
-switch ($udf2) {
-    case '200kg': $packMult = 200; break;
-    case '500kg': $packMult = 500; break;
-    case '1000kg': $packMult = 1000; break;
-    case '2000kg': $packMult = 2000; break;
+$isFixed = intval($rowStock['is_fixed_price']);
+if ($isFixed === 1) {
+    $estSubtotal = floatval($rowStock['price_in_inr']) * intval($udf3);
+} else {
+    $packMult = 1.0;
+    switch ($udf2) {
+        case '200kg': $packMult = 200; break;
+        case '500kg': $packMult = 500; break;
+        case '1000kg': $packMult = 1000; break;
+        case '2000kg': $packMult = 2000; break;
+    }
+    $basePrice = floatval($rowStock['price_in_inr']);
+    $estSubtotal = round($basePrice * $packMult) * intval($udf3);
 }
-$basePrice = floatval($rowStock['price_in_inr']);
-$estSubtotal = round($basePrice * $packMult) * intval($udf3);
 $estShipping = floatval($formattedAmount) - $estSubtotal;
 if ($estShipping < 0) $estShipping = 0.00;
 

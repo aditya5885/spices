@@ -8,6 +8,11 @@ RewriteRule ^index\.html$ / [R=301,L]
 # Route /admin to the PHP admin panel
 RewriteRule ^admin/?$ /api/admin.php [L,QSA]
 
+# Redirect single-segment paths with trailing slash to without trailing slash (if the HTML file exists)
+# This prevents conflicts with Next.js manifest metadata folders (e.g. serving /order/ instead of order.html)
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^([^/]+)/+$ /$1 [R=301,L,NE]
+
 # Resolve subpages without trailing slash and without .html extension
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
