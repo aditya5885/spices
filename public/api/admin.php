@@ -985,6 +985,22 @@ if (!$loggedIn) {
                             </div>
                         </div>
 
+                        <div class="settings-section-title">Shipping settings</div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label for="setting-shipping_cost_standard">Standard Shipping Cost (INR)</label>
+                                <input type="number" id="setting-shipping_cost_standard" class="form-control" name="shipping_cost_standard" min="0" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="setting-shipping_cost_express">Express Shipping Cost (INR)</label>
+                                <input type="number" id="setting-shipping_cost_express" class="form-control" name="shipping_cost_express" min="0" step="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="setting-shipping_free_threshold">Free Standard Shipping Threshold Amount (INR)</label>
+                            <input type="number" id="setting-shipping_free_threshold" class="form-control" name="shipping_free_threshold" min="0" step="1">
+                        </div>
+
                         <div class="settings-section-title">General settings</div>
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                             <div class="form-group">

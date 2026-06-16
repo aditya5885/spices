@@ -153,7 +153,10 @@ $defaultSettings = [
     'paytm_base_url' => PAYTM_BASE_URL,
     'site_url' => SITE_URL,
     'admin_password' => ADMIN_PASSWORD,
-    'new_order_email' => 'admin@vintageglobaltrading.com'
+    'new_order_email' => 'admin@vintageglobaltrading.com',
+    'shipping_cost_standard' => '0',
+    'shipping_cost_express' => '0',
+    'shipping_free_threshold' => '1000'
 ];
 
 $stmtSet = $conn->prepare("INSERT INTO settings (key_name, value_text) VALUES (?, ?) ON DUPLICATE KEY UPDATE key_name = key_name");

@@ -22,6 +22,9 @@ function OrderFormContent() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [razorpayKey, setRazorpayKey] = useState("rzp_test_dummykey123");
+  const [shippingStandard, setShippingStandard] = useState(0);
+  const [shippingExpress, setShippingExpress] = useState(0);
+  const [shippingThreshold, setShippingThreshold] = useState(1000);
   
   const [packSize, setPackSize] = useState<string>("500kg");
   const [quantity, setQuantity] = useState<number>(1); // Number of packs
@@ -85,8 +88,19 @@ function OrderFormContent() {
         return res.json();
       })
       .then((data) => {
-        if (data && data.razorpay_key_id) {
-          setRazorpayKey(data.razorpay_key_id);
+        if (data) {
+          if (data.razorpay_key_id) {
+            setRazorpayKey(data.razorpay_key_id);
+          }
+          if (data.shipping_cost_standard !== undefined) {
+            setShippingStandard(Number(data.shipping_cost_standard));
+          }
+          if (data.shipping_cost_express !== undefined) {
+            setShippingExpress(Number(data.shipping_cost_express));
+          }
+          if (data.shipping_free_threshold !== undefined) {
+            setShippingThreshold(Number(data.shipping_free_threshold));
+          }
         }
       })
       .catch((err) => console.warn("Error loading config, falling back to static sandbox key:", err.message || err));
@@ -177,12 +191,10 @@ function OrderFormContent() {
   const subtotalINR = unitPriceINR * quantity;
   
   // Shipping calculation:
-  // Standard: ₹100, free for orders above ₹1000
-  // Express: ₹250 flat
   const shippingINR =
     shippingMethod === "standard"
-      ? (subtotalINR >= 1000 ? 0 : 100)
-      : 250;
+      ? (subtotalINR >= shippingThreshold ? 0 : shippingStandard)
+      : shippingExpress;
 
   // COD Fee: ₹50 if COD is chosen
   const codFeeINR = paymentMethod === "cod" ? 50 : 0;
@@ -722,7 +734,7 @@ function OrderFormContent() {
                         Standard Courier Delivery
                       </h4>
                       <p className="text-[11px] text-on-surface-variant font-medium mt-1 leading-relaxed">
-                        Estimated arrival: 3-5 business days. Flat ₹100 charge (Free for orders above ₹1,000).
+                        Estimated arrival: 3-5 business days. Flat ₹{shippingStandard} charge (Free for orders above ₹{shippingThreshold.toLocaleString("en-IN")}).
                       </p>
                     </div>
                   </button>
@@ -744,7 +756,7 @@ function OrderFormContent() {
                         Express Courier Delivery
                       </h4>
                       <p className="text-[11px] text-on-surface-variant font-medium mt-1 leading-relaxed">
-                        Estimated arrival: 1-2 business days. Flat ₹250 charge across India.
+                        Estimated arrival: 1-2 business days. Flat ₹{shippingExpress} charge across India.
                       </p>
                     </div>
                   </button>

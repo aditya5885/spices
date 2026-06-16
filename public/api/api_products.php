@@ -114,6 +114,12 @@ if ($method === 'GET') {
         $check->close();
         
         $stmt = $conn->prepare("INSERT INTO products (slug, name, description, price_in_inr, image, badge, specs, stock_qty, is_active, is_fixed_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        if (!$stmt) {
+            http_response_code(500);
+            echo json_encode(["error" => "Database statement preparation failed: " . $conn->error . ". Please make sure you have run /api/setup.php to update the database tables."]);
+            $conn->close();
+            exit();
+        }
         $stmt->bind_param("sssdsssiii", $slug, $name, $description, $price, $imagePath, $badge, $specs, $stock, $isActive, $isFixed);
         
         if ($stmt->execute()) {
@@ -170,6 +176,12 @@ if ($method === 'GET') {
         $check->close();
         
         $stmt = $conn->prepare("UPDATE products SET slug = ?, name = ?, description = ?, price_in_inr = ?, image = ?, badge = ?, specs = ?, stock_qty = ?, is_active = ?, is_fixed_price = ? WHERE id = ?");
+        if (!$stmt) {
+            http_response_code(500);
+            echo json_encode(["error" => "Database statement preparation failed: " . $conn->error . ". Please make sure you have run /api/setup.php to update the database tables."]);
+            $conn->close();
+            exit();
+        }
         $stmt->bind_param("sssdsssiiii", $slug, $name, $description, $price, $imagePath, $badge, $specs, $stock, $isActive, $isFixed, $id);
         
         if ($stmt->execute()) {
