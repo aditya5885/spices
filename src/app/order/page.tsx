@@ -323,7 +323,7 @@ function OrderFormContent() {
             formData.fullName
           )}&total=${totalINR}&method=Razorpay`;
         } else {
-          alert("Unable to start Razorpay checkout right now. Please try again.");
+          alert(`Unable to start Razorpay checkout: ${err.message || err}. Please try again.`);
         }
       } finally {
         setIsProcessing(false);
