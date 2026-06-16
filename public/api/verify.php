@@ -137,6 +137,9 @@ if ($stmt->execute()) {
     $stmtDec->execute();
     $stmtDec->close();
 
+    // Trigger order confirmation email notification
+    sendOrderEmail($orderId);
+
     echo json_encode([
         "verified" => true,
         "order_id" => $orderId,

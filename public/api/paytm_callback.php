@@ -69,6 +69,9 @@ if ($status === "TXN_SUCCESS") {
         $stmtDec->bind_param("is", $pQty, $pSlug);
         $stmtDec->execute();
         $stmtDec->close();
+
+        // Trigger order confirmation email notification
+        sendOrderEmail($orderId);
     }
     
     $stmtCheck->close();

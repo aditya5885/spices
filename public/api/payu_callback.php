@@ -82,6 +82,9 @@ if ($status === "success") {
             $stmtDec->bind_param("is", $pQty, $pSlug);
             $stmtDec->execute();
             $stmtDec->close();
+
+            // Trigger order confirmation email notification
+            sendOrderEmail($txnid);
         }
     }
     $stmtCheck->close();
